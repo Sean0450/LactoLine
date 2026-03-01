@@ -1,7 +1,7 @@
 #pragma once
 
-#include <compare>
-
+namespace GeneralValues
+{
 class Amount
 {
     double m_value {0.0};
@@ -13,3 +13,4 @@ public:
     double value() const;
     auto operator<=>(const Amount& amount) const = default;
 };
+}

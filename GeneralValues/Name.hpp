@@ -2,6 +2,8 @@
 
 #include <string>
 
+namespace GeneralValues 
+{
 class Name
 {
     std::string m_name;
@@ -10,3 +12,4 @@ public:
     bool operator==(const Name& name) const = default;
     std::string name() const;
 };
+}

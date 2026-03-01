@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+namespace GeneralValues 
+{
 Name::Name(std::string&& name)
 {
     if (name.empty())
@@ -14,4 +16,5 @@ Name::Name(std::string&& name)
 std::string Name::name() const
 {
     return m_name;
+}
 }

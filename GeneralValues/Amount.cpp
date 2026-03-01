@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+namespace GeneralValues 
+{
 Amount::Amount(double value)
 {
     checkAmount(value);
@@ -23,4 +25,5 @@ void Amount::changeAmount(double value)
 double Amount::value() const
 {
     return m_value;
+}
 }

@@ -3,8 +3,10 @@
 
 #include <stdexcept>
 
-Progress::Progress(Amount && currentResult, Amount&& goal):m_currentResult(std::move(currentResult)),
-                                                           m_goal(std::move(goal))
+namespace GeneralValues
+{
+Progress::Progress(Amount&& currentResult, Amount&& goal):m_currentResult(std::move(currentResult)),
+                                                          m_goal(std::move(goal))
 {}
 
 void Progress::changeCurrentResult(Amount newResult)
@@ -25,4 +27,5 @@ double Progress::completed() const
     else
         result *= 100.0;
     return result;
+}
 }

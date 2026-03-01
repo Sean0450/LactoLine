@@ -2,6 +2,8 @@
 
 #include "Amount.hpp"
 
+namespace GeneralValues
+{
 class Progress
 {
     Amount m_currentResult;
@@ -13,3 +15,4 @@ public:
     void changeGoal(Amount goal);
     double completed() const;
 };
+}
