@@ -12,14 +12,8 @@ Amount::Amount(double value)
 
 void Amount::checkAmount(double value)
 {
-    if (value < 0.0)
-        throw std::runtime_error("amount can't be negative");
-}
-
-void Amount::changeAmount(double value)
-{
-    checkAmount(value);
-    m_value = value;
+    if (value < s_minAmount)
+        throw std::runtime_error("Amount can't be negative");
 }
 
 double Amount::value() const
