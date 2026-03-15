@@ -7,14 +7,14 @@ namespace GeneralValues
 Name::Name(std::string&& name)
 {
     if (name.empty())
-    {
-        throw std::runtime_error("Имя должно содержать хотя бы 1 символ");
-    }
+        throw std::runtime_error("Name can't be empty");
     m_name = std::move(name);
 }
 
 std::string Name::name() const
 {
+    if (m_name.empty())
+        throw std::runtime_error("Name is empty");
     return m_name;
 }
 }
