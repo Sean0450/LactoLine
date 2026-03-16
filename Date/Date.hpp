@@ -26,6 +26,8 @@ struct DateDistance
     int year {0};
     int month {0};
     int day {0};
+    bool empty() const;
+    bool isDistanceEqualOrMore(const DateDistance& distance) const;
 };
 
 class Date
@@ -35,8 +37,10 @@ class Date
     int dayCount(MonthName name, int year) const;
     bool isLeapYear(int year) const;
 public:
+    Date() = default;
     explicit Date(std::string_view date);
-    DateDistance compareDate(const Date& date);
+    void setDate(std::string_view date);
+    DateDistance compareDate(const Date& date) const;
     std::string getDate() const;
 };
 }

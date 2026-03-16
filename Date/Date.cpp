@@ -7,14 +7,49 @@
 
 namespace Date 
 {
+
+bool DateDistance::empty() const
+{
+    return day   == 0 &&
+           month == 0 &&
+           year  == 0; 
+
+}
+
+bool DateDistance::isDistanceEqualOrMore(const DateDistance& distance) const
+{
+    bool result {true};
+    const auto [c_year, c_month, c_day] = distance;
+    if (year == c_year)
+    {
+        if (month < c_month)
+            result = false;
+        if (month == c_month)
+        {
+            if (day < c_day)
+                result = false;
+        }
+    }
+    else if (year < c_year)
+        result = false;
+    
+    return result;
+}
 Date::Date(std::string_view date)
 {
-    if (!std::regex_match(date.begin(), date.end(), s_dateTemplate))
+    setDate(date);
+}
+
+void Date::setDate(std::string_view date)
+{
+    if (!std::regex_match(date.begin(), date.end(), s_dateTemplate) || !m_distance.empty())
         throw std::runtime_error("It is not a date");
 
     m_distance.day = std::stoi(date.substr(0, 2).data());
     m_distance.month = std::stoi(date.substr(3, 2).data());
     m_distance.year = std::stoi(date.substr(6, 4).data());
+    if (dayCount(static_cast<MonthName>(m_distance.month), m_distance.year) < m_distance.day)
+        throw std::runtime_error("Invalid days count");
 }
 
 bool Date::isLeapYear(int year) const
@@ -53,8 +88,12 @@ int Date::dayCount(MonthName name, int year) const
     return result;
 }
 
-DateDistance Date::compareDate(const Date& date)
+DateDistance Date::compareDate(const Date& date) const
 {
+    if (m_distance.empty())
+        throw std::runtime_error("Can't compae dates. Current date is empty");
+    if (date.m_distance.empty())
+        throw std::runtime_error("Can't compare dates. Incomming date is empty");
     const auto [ year, month, day] = m_distance;
     const auto [c_year, c_month, c_day] = date.m_distance;
     int yearsDisnace {year - c_year};
