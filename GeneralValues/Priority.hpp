@@ -19,9 +19,9 @@ class Priority
     Date::Date m_releaseDate;
     PriorityStatus m_prioity {PriorityStatus::Low};
     static constexpr Date::DateDistance s_lowPriorityMarker{0, 1, 0};
-    static constexpr Date::DateDistance s_mediumPriorityMarker{0, 0, 14};
-    static constexpr Date::DateDistance s_highProrityMarker {0, 0, 7};
-    static constexpr Date::DateDistance s_extraPriorityMarker {0, 0, 3};
+    static constexpr Date::DateDistance s_mediumPriorityMarker{14, 0, 0};
+    static constexpr Date::DateDistance s_highProrityMarker {7, 0, 0};
+    static constexpr Date::DateDistance s_extraPriorityMarker {3, 0, 0};
 public:
     Priority() = default;
     template <typename ReleaseDate, typename CurrentDate>

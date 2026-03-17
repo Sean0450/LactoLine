@@ -19,7 +19,7 @@ bool DateDistance::empty() const
 bool DateDistance::isDistanceEqualOrMore(const DateDistance& distance) const
 {
     bool result {true};
-    const auto [c_year, c_month, c_day] = distance;
+    const auto [c_day, c_month, c_year] = distance;
     if (year == c_year)
     {
         if (month < c_month)
@@ -94,8 +94,8 @@ DateDistance Date::compareDate(const Date& date) const
         throw std::runtime_error("Can't compae dates. Current date is empty");
     if (date.m_distance.empty())
         throw std::runtime_error("Can't compare dates. Incomming date is empty");
-    const auto [ year, month, day] = m_distance;
-    const auto [c_year, c_month, c_day] = date.m_distance;
+    const auto [ day, month, year] = m_distance;
+    const auto [c_day, c_month, c_year] = date.m_distance;
     int yearsDisnace {year - c_year};
     if (yearsDisnace > 0)
     {
@@ -114,12 +114,12 @@ DateDistance Date::compareDate(const Date& date) const
     {
         daysDistance = dayCount(static_cast<MonthName>(c_month), c_year) - c_day + day;
     }
-    return {yearsDisnace, monthesDistance, daysDistance};
+    return {.day=daysDistance, .month=monthesDistance, .year=yearsDisnace};
 }
 
 std::string Date::getDate() const
 {
-    const auto [ year, month, day] = m_distance;
+    const auto [day, month, year] = m_distance;
     return std::format("{:02d}.{:02d}.{}", day, month, year);
 }
 }

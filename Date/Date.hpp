@@ -23,9 +23,9 @@ enum class MonthName
 
 struct DateDistance
 {
-    int year {0};
-    int month {0};
     int day {0};
+    int month {0};
+    int year {0};
     bool empty() const;
     bool isDistanceEqualOrMore(const DateDistance& distance) const;
 };
