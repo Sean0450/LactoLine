@@ -15,7 +15,7 @@ public:
     Product() = default;
     explicit Product(Name&& name,
                      Name&& category, 
-                     Amount&& unitRawMaterials,
+                     Amount unitRawMaterials,
                      double primeCost, 
                      double epsilon);
     bool compareOutput(Amount amount, Amount wastedRawMaterials) const;

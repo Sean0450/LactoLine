@@ -5,11 +5,11 @@
 
 Product::Product(Name&& name,
                  Name&& category, 
-                 Amount&& unitRawMaterials,
+                 Amount unitRawMaterials,
                  double primeCost, 
                  double epsilon): m_name(std::move(name)),
                                   m_category(std::move(category)),
-                                  m_unitRawMaterials(std::move(unitRawMaterials))
+                                  m_unitRawMaterials(unitRawMaterials)
 {
     if (primeCost <= 0.0 || epsilon <= 0.0)
         throw std::runtime_error("Incorrect measurements");
