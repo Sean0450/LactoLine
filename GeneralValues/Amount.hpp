@@ -6,7 +6,7 @@ namespace GeneralValues
 {
 class Amount
 {
-    static constexpr double s_minAmount {0.001};
+    static constexpr double s_minAmount {0.0};
     double m_value {0.0};
     void checkAmount(double value);
 public:
