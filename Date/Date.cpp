@@ -3,7 +3,6 @@
 #include <regex>
 #include <stdexcept>
 #include <string>
-#include <iostream>
 
 namespace Date 
 {
@@ -131,5 +130,10 @@ std::string Date::getDate() const
 {
     const auto [day, month, year] = m_distance;
     return std::format("{:02d}.{:02d}.{}", day, month, year);
+}
+
+bool Date::isDateMore(const Date& date) const
+{
+    return m_distance.isDistanceEqualOrMore(date.m_distance);
 }
 }

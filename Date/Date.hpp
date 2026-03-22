@@ -42,5 +42,6 @@ public:
     void setDate(std::string_view date);
     DateDistance compareDate(const Date& date) const;
     std::string getDate() const;
+    bool isDateMore(const Date& date) const;
 };
 }
