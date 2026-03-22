@@ -3,6 +3,17 @@
 
 namespace GeneralValues
 {
+
+Priority::Priority(const Date::Date& releaseDate, const Date::Date& currentDate)
+{
+    changeReleaseDate(releaseDate, currentDate);
+}
+
+Priority::Priority(PriorityStatus status, const Date::Date& releaseDate):m_prioity(status),
+                                                                         m_releaseDate(releaseDate)
+{
+}
+
 void Priority::changeReleaseDate(const Date::Date& newReleaseDate, const Date::Date& currentDate)
 {
     Date::DateDistance timeToComplete = newReleaseDate.compareDate(currentDate);
@@ -16,11 +27,6 @@ void Priority::changeReleaseDate(const Date::Date& newReleaseDate, const Date::D
         m_prioity = PriorityStatus::Extra;
     else
         throw std::runtime_error("Release date too close");
-}
-
-void Priority::changePriority(PriorityStatus newStatus)
-{
-    m_prioity = newStatus;
 }
 
 PriorityStatus Priority::status() const

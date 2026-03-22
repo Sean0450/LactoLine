@@ -1,7 +1,5 @@
 #pragma once
 
-#include <utility>
-
 #include "../Date/Date.hpp"
 
 namespace GeneralValues
@@ -22,15 +20,11 @@ class Priority
     static constexpr Date::DateDistance s_mediumPriorityMarker{14, 0, 0};
     static constexpr Date::DateDistance s_highProrityMarker {7, 0, 0};
     static constexpr Date::DateDistance s_extraPriorityMarker {3, 0, 0};
+    void changeReleaseDate(const Date::Date& newReleaseDate, const Date::Date& currentDate);
 public:
     Priority() = default;
-    template <typename ReleaseDate, typename CurrentDate>
-    Priority(ReleaseDate&& releaseDate, CurrentDate&& currentDate): m_releaseDate(std::forward<ReleaseDate>(releaseDate))
-    {
-        changeReleaseDate(m_releaseDate, currentDate);
-    }
-    void changeReleaseDate(const Date::Date& newReleaseDate, const Date::Date& currentDate);
-    void changePriority(PriorityStatus newStatus);
+    Priority(const Date::Date& releaseDate, const Date::Date& currentDate);
+    Priority(PriorityStatus status, const Date::Date& releaseDate);
     PriorityStatus status() const;
 };
 }
