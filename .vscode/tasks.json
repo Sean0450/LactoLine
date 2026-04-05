@@ -10,6 +10,7 @@
                 "${workspaceFolder}/*.cpp",
                 "${workspaceFolder}/GeneralValues/*.cpp",
                 "${workspaceFolder}/Date/*.cpp",
+                "${workspaceFolder}/Tasks/*.cpp",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
                 "-std=c++20"
