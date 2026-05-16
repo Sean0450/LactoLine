@@ -1,7 +1,14 @@
-#include <iostream>
-#include "Name.hpp"
+#include "mainwindow.hpp"
 
-int main()
+#include <QApplication>
+#include <QLocale>
+#include <QTranslator>
+
+int main(int argc, char *argv[])
 {
-    return 0;
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.setStyleSheet("background-color: #F0F8FF;");
+    w.show();
+    return a.exec();
 }
