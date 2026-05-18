@@ -1,4 +1,4 @@
-#include "CurrentShiftTaskGroup.hpp"
+﻿#include "CurrentShiftTaskGroup.hpp"
 #include "TaskWidget.hpp"
 
 #include <QComboBox>
@@ -92,7 +92,7 @@ void CurrentShiftTaskGroup::addTaskNames(const QStringList& names)
 
 void CurrentShiftTaskGroup::insertWidget(TaskWidget* widget)
 {
-    if (!std::ranges::any_of(m_tasks, [widget](auto* element){return element->getTaskName() == widget->getTaskName();}))
+    if (!std::ranges::any_of(m_tasks, [widget](auto* element){return element->getTaskIdentifier() == widget->getTaskIdentifier();}))
     {
         m_tasks.emplace_back(widget);
         connect(m_tasks.back(),
