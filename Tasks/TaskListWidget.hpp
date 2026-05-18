@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <QWidget>
 #include <QAbstractListModel>
@@ -14,7 +14,7 @@ class TaskWidget;
 class TaskGroup;
 class CurrentShiftTaskGroup;
 
-class TaskList : public QWidget
+class TaskListWidget : public QWidget
 {
     Q_OBJECT
     std::vector<Tasks::TaskData> m_tasks;
@@ -31,5 +31,5 @@ private slots:
     void moveTaskFromToDo(const QString& taskName);
     void changeTaskData(const ChangedData& data);
 public:
-    explicit TaskList(const std::vector<Tasks::TaskData>& tasks, QWidget *parent = nullptr);
+    explicit TaskListWidget(const std::vector<Tasks::TaskData>& tasks, QWidget *parent = nullptr);
 };

@@ -1,4 +1,4 @@
-#include "Tasklist.hpp"
+﻿#include "TaskListWidget.hpp"
 #include "TaskGroup.hpp"
 #include "TaskWidget.hpp"
 #include "CurrentShiftTaskGroup.hpp"
@@ -8,7 +8,7 @@
 #include <QProgressBar>
 #include <QGroupBox>
 
-TaskList::TaskList(const std::vector<Tasks::TaskData>& tasks, QWidget *parent)
+TaskListWidget::TaskListWidget(const std::vector<Tasks::TaskData>& tasks, QWidget *parent)
     : QWidget{parent},
       m_tasks(tasks)
 {
@@ -17,7 +17,7 @@ TaskList::TaskList(const std::vector<Tasks::TaskData>& tasks, QWidget *parent)
     m_currentShifTasktGroup->addTaskNames(m_toDoTaskGroup->getTaskNames());
 }
 
-void TaskList::createWidgets()
+void TaskListWidget::createWidgets()
 {
     std::vector<Tasks::TaskData> currentTasks;
     std::vector<Tasks::TaskData> toDoTasks;
@@ -56,7 +56,7 @@ void TaskList::createWidgets()
     }
 }
 
-void TaskList::moveTaskFromToDo(const QString& taskName)
+void TaskListWidget::moveTaskFromToDo(const QString& taskName)
 {
     auto* widget = m_toDoTaskGroup->getWidget(taskName);
     if (widget)
@@ -68,7 +68,7 @@ void TaskList::moveTaskFromToDo(const QString& taskName)
     }
 }
 
-void TaskList::changeTaskData(const ChangedData& data)
+void TaskListWidget::changeTaskData(const ChangedData& data)
 {
     auto iterator = std::ranges::find_if(m_tasks, [data](const auto& task)
                                          {return data.identifier == task.getIdentifier();});
