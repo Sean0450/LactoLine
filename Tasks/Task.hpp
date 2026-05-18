@@ -4,12 +4,14 @@
 #include "../GeneralValues/Progress.hpp"
 #include "../GeneralValues/Priority.hpp"
 #include "../Product.hpp"
+#include "../GeneralValues/Gui.hpp"
 
 namespace Tasks
 {
 using namespace GeneralValues;
 class Task
 {
+    GUI m_gui;
     Name m_taskName;
     Amount m_productAmount;
     Priority m_taskPriority;
@@ -19,13 +21,19 @@ class Task
     Amount m_createdProduct;
 public:
     Task()=default;
-    Task(Name&& taskName, Amount productAmount, Priority&& taskPriority, Product&& productToCreate, Date::Date&& releaseDate);
+    Task(const GUI& gui,
+         Name&& taskName,
+         Amount productAmount,
+         Priority&& taskPriority,
+         Product&& productToCreate,
+         Date::Date&& releaseDate);
     void addData(Amount doneProductAmount);
     bool isTaskDone() const;
     void changeTaskPriority(PriorityStatus newPriorityStatus);
     void changeReleaseDate(const Date::Date& newReleaseDate, const Date::Date& currentDate);
     void changeProductToDoAmount(Amount newProductAmount);
     void changeTaskName(const Name& newName);
+    GUI gui() const;
     double leftToDo() const;
     std::string taskName() const;
     std::string productName() const;

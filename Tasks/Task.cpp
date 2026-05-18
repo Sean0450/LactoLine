@@ -3,11 +3,13 @@
 //TODO: создать глобально-уникальный id для каждой задачи
 namespace Tasks
 {
-Task::Task(Name&& taskName, 
+Task::Task(const GUI& gui,
+           Name&& taskName,
            Amount productAmount, 
            Priority&& taskPriority, 
            Product&& productToCreate,
-           Date::Date&& releaseDate ):m_taskName(std::move(taskName)),
+           Date::Date&& releaseDate ):m_gui(gui),
+                                      m_taskName(std::move(taskName)),
                                       m_productAmount(productAmount),
                                       m_taskPriority(std::move(taskPriority)),
                                       m_productToCreate(std::move(productToCreate)),
@@ -65,6 +67,11 @@ void Task::changeTaskName(const Name& newName)
 {
     if (!isTaskDone())
         m_taskName = newName;
+}
+
+GUI Task::gui() const
+{
+    return m_gui;
 }
 
 std::string Task::taskName() const
