@@ -14,7 +14,8 @@ TaskListWidget::TaskListWidget(const std::vector<Tasks::TaskData>& tasks, QWidge
 {
     m_mainLayout = new QVBoxLayout(this);
     createWidgets();
-    m_currentShifTasktGroup->addTaskNames(m_toDoTaskGroup->getTaskNames());
+    if (m_toDoTaskGroup)
+        m_currentShifTasktGroup->addTaskNames(m_toDoTaskGroup->getTaskNames());
 }
 
 void TaskListWidget::createWidgets()
@@ -81,14 +82,15 @@ void TaskListWidget::changeTaskData(const ChangedData& data)
             task.taskName = std::get<std::string>(data.data);
             break;
         case TaskDataChanged::StatusChanged:
-            task.status = static_cast<GeneralValues::PriorityStatus>(std::get<int>(data.data));
+            task.status = std::get<GeneralValues::PriorityStatus>(data.data);
             break;
         case TaskDataChanged::DoneAmountChanged:
-            task.doneProduct = std::get<int>(data.data);
+            task.doneProduct = std::get<double>(data.data);
             break;
         case TaskDataChanged::ToDoAmountChanged:
-            task.productToDoAmount = std::get<int>(data.data);
+            task.productToDoAmount = std::get<double>(data.data);
             break;
         }
+        emit taskDataChanged(data);
     }
 }

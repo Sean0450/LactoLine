@@ -32,4 +32,6 @@ private slots:
     void changeTaskData(const ChangedData& data);
 public:
     explicit TaskListWidget(const std::vector<Tasks::TaskData>& tasks, QWidget *parent = nullptr);
+signals:
+    void taskDataChanged(const ChangedData& taskData);
 };

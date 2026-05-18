@@ -1,4 +1,4 @@
-#include "TaskGroup.hpp"
+﻿#include "TaskGroup.hpp"
 #include "TaskWidget.hpp"
 
 #include <QVBoxLayout>
@@ -18,7 +18,7 @@ TaskGroup::TaskGroup(const QString& title, std::vector<Tasks::TaskData>&& data, 
 
 void TaskGroup::addWidget(const Tasks::TaskData& data)
 {
-    if (!std::ranges::any_of(m_tasks, [&](auto* widget){return data.taskName == widget->getTaskName();}))
+    if (!std::ranges::any_of(m_tasks, [&](auto* widget){return data.getIdentifier() == widget->getTaskIdentifier();}))
     {
         m_tasks.emplace_back(new TaskWidget(data, this));
         m_mainLayout->addWidget(m_tasks.back());
