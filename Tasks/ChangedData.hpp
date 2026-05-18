@@ -1,7 +1,10 @@
-#pragma once
+﻿#pragma once
 
 #include <string>
 #include <variant>
+
+#include "GeneralValues/Gui.hpp"
+#include "GeneralValues/Priority.hpp"
 
 enum class TaskDataChanged: int
 {
@@ -14,6 +17,6 @@ enum class TaskDataChanged: int
 struct ChangedData
 {
     std::string identifier;
-    std::variant<std::string, int> data;
+    std::variant<GeneralValues::GUI, double, GeneralValues::PriorityStatus> data;
     TaskDataChanged flag;
 };
