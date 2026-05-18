@@ -26,8 +26,8 @@ SOURCES += \
     Tasks/CurrentShiftTaskGroup.cpp \
     Tasks/Task.cpp \
     Tasks/TaskGroup.cpp \
+    Tasks/TaskListWidget.cpp \
     Tasks/TaskWidget.cpp \
-    Tasks/Tasklist.cpp \
     main.cpp \
     mainwindow.cpp \
     third_party/sqlite3/sqlite3.c \
@@ -58,8 +58,8 @@ HEADERS += \
     Tasks/Task.hpp \
     Tasks/TaskData.hpp \
     Tasks/TaskGroup.hpp \
+    Tasks/TaskListWidget.hpp \
     Tasks/TaskWidget.hpp \
-    Tasks/Tasklist.hpp \
     mainwindow.hpp \
     third_party/include/SQLiteCpp/Assertion.h \
     third_party/include/SQLiteCpp/Backup.h \
@@ -80,7 +80,7 @@ FORMS += \
     mainwindow.ui
 
 TRANSLATIONS += \
-    LactoLine_Qt_ru_RU.ts
+    LactoLine_ru_RU.ts
 CONFIG += lrelease
 CONFIG += embed_translations
 
@@ -95,3 +95,8 @@ RESOURCES += \
 DISTFILES += \
     third_party/sqlite3/CMakeLists.txt \
     third_party/sqlite3/README.md
+
+msvc {
+    QMAKE_CFLAGS += /utf-8
+    QMAKE_CXXFLAGS += /utf-8
+}
