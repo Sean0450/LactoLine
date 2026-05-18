@@ -1,4 +1,4 @@
-#include "Name.hpp"
+﻿#include "Name.hpp"
 
 #include <stdexcept>
 
@@ -9,6 +9,13 @@ Name::Name(std::string&& name)
     if (name.empty())
         throw std::runtime_error("Name can't be empty");
     m_name = std::move(name);
+}
+
+Name::Name(const std::string& name)
+{
+    if (name.empty())
+        throw std::runtime_error("Name can't be empty");
+    m_name = name;
 }
 
 std::string Name::name() const

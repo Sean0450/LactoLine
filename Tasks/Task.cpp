@@ -1,4 +1,4 @@
-#include "Task.hpp"
+﻿#include "Task.hpp"
 #include <stdexcept>
 //TODO: создать глобально-уникальный id для каждой задачи
 namespace Tasks
@@ -70,6 +70,11 @@ void Task::changeTaskName(const Name& newName)
 std::string Task::taskName() const
 {
     return m_taskName.name();
+}
+
+std::string Task::productName() const
+{
+    return m_productToCreate.name().name();
 }
 
 int Task::taskPriority() const

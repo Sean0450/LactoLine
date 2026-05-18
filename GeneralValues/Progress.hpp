@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Amount.hpp"
 
@@ -12,7 +12,7 @@ class Progress
     void checkGoal(Amount goal) const;
 public:
     Progress() = default;
-    explicit Progress(Amount&& currentResult, Amount&& goal);
+    explicit Progress(Amount currentResult, Amount goal);
     void changeCurrentResult(Amount newResult);
     void changeGoal(Amount goal);
     double completed() const;

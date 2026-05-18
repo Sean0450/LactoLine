@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "../GeneralValues/Amount.hpp"
 #include "../GeneralValues/Progress.hpp"
@@ -28,6 +28,7 @@ public:
     void changeTaskName(const Name& newName);
     double leftToDo() const;
     std::string taskName() const;
+    std::string productName() const;
     int taskPriority() const;
     std::string releaseDate() const;
     double createdProduct() const;

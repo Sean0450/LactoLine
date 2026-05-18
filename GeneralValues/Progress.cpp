@@ -1,11 +1,11 @@
-#include "Progress.hpp"
+﻿#include "Progress.hpp"
 #include "Amount.hpp"
 
 #include <stdexcept>
 
 namespace GeneralValues
 {
-Progress::Progress(Amount&& currentResult, Amount&& goal):m_currentResult(std::move(currentResult))
+Progress::Progress(Amount currentResult, Amount goal):m_currentResult(std::move(currentResult))
 {
     checkGoal(goal);
     m_goal = std::move(goal);

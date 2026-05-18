@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <string>
 
@@ -10,6 +10,7 @@ class Name
 public:
     Name() = default;
     explicit Name(std::string&& name);
+    explicit Name(const std::string& name);
     bool operator==(const Name& name) const = default;
     std::string name() const;
 };
