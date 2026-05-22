@@ -1,5 +1,6 @@
 ﻿#include "CurrentShiftTaskGroup.hpp"
 #include "TaskWidget.hpp"
+#include "Dialogs/CreateTaskdialog.hpp"
 
 #include <QComboBox>
 #include <QPushButton>
@@ -8,7 +9,8 @@
 
 CurrentShiftTaskGroup::CurrentShiftTaskGroup(const QString& title,
                                              std::vector<Tasks::TaskData>&& data,
-                                             QWidget* parent): TaskGroup{title, std::move(data), parent}
+                                             TaskChangedObserver* observer,
+                                             QWidget* parent): TaskGroup{title, std::move(data), observer, parent}
 {
     createAddTaskComboBox();
     createTaskCreationButton();
@@ -23,14 +25,14 @@ void CurrentShiftTaskGroup::createAddTaskComboBox()
         auto* layout = new QHBoxLayout();
         m_addTask = new QComboBox(this);
         m_addTask->setFont(m_baseFont);
-        m_addTask->setStyleSheet("QComboBox {" + QString::fromUtf8(Resources::Styles::baseElementsStyle) + "}" +
-                                 QString::fromUtf8(Resources::Styles::dropDownComboBoxStyle));
+        m_addTask->setStyleSheet("QComboBox {" + QLatin1String(Resources::Styles::baseElementsStyle) + "}" +
+                                 QLatin1String(Resources::Styles::dropDownComboBoxStyle));
         connect(m_addTask, &QComboBox::currentIndexChanged, this, &CurrentShiftTaskGroup::onAddTaskIndexChange);
 
         m_applyAdding = new QPushButton("Добавить", this);
         m_applyAdding->setFont(m_baseFont);
-        m_applyAdding->setStyleSheet("QPushButton{ " + QString::fromUtf8(Resources::Styles::baseElementsStyle) + "}" +
-                                     QString::fromUtf8(Resources::Styles::pressedButtonStyle));
+        m_applyAdding->setStyleSheet("QPushButton{ " + QLatin1String(Resources::Styles::baseElementsStyle) + "}" +
+                                     QLatin1String(Resources::Styles::pressedButtonStyle));
         m_applyAdding->setVisible(false);
         connect(m_applyAdding, &QPushButton::clicked, this, &CurrentShiftTaskGroup::onApplyAddingClick);
 
@@ -51,6 +53,7 @@ void CurrentShiftTaskGroup::createTaskCreationButton()
         m_createTask->setFont(m_baseFont);
         m_createTask->setStyleSheet("QPushButton{ " + QString::fromUtf8(Resources::Styles::baseElementsStyle) + "}" +
                                     QString::fromUtf8(Resources::Styles::pressedButtonStyle));
+        connect(m_createTask, &QPushButton::clicked, this, &CurrentShiftTaskGroup::onCreateTaskButtonClick);
         layout->addWidget(m_createTask);
         layout->addStretch(1);
 
@@ -70,7 +73,20 @@ void CurrentShiftTaskGroup::onApplyAddingClick()
     {
         emit askTask(m_addTask->currentText());
         m_addTask->removeItem(m_addTask->currentIndex());
+        m_addTask->setCurrentIndex(-1);
         m_applyAdding->setVisible(false);
+    }
+}
+
+void CurrentShiftTaskGroup::onCreateTaskButtonClick()
+{
+    QStringList data {"Молоко 1.5л"};
+    auto createTaskDialog = CreateTaskDialog(data, this);
+    createTaskDialog.exec();
+    std::optional<Tasks::TaskData> taskData = createTaskDialog.getTaskData();
+    if (taskData)
+    {
+        emit newTaskCreated(taskData.value());
     }
 }
 
@@ -84,6 +100,7 @@ void CurrentShiftTaskGroup::addTaskNames(const QStringList& names)
     if (m_addTask)
     {
         m_toDoTasks = names;
+        m_addTask->clear();
         m_addTask->addItems(m_toDoTasks);
         m_addTask->setCurrentIndex(-1);
         m_applyAdding->setVisible(false);
@@ -95,10 +112,6 @@ void CurrentShiftTaskGroup::insertWidget(TaskWidget* widget)
     if (!std::ranges::any_of(m_tasks, [widget](auto* element){return element->getTaskIdentifier() == widget->getTaskIdentifier();}))
     {
         m_tasks.emplace_back(widget);
-        connect(m_tasks.back(),
-                &TaskWidget::taskDataChanged,
-                this,
-                [&](const ChangedData& data){emit sendChangedData(data);});
         int position = static_cast<int>(m_tasks.size()) - 1;
         m_mainLayout->insertWidget(position, m_tasks.back());
         int newWidth = m_tasks.back()->getTaskNameWidth();

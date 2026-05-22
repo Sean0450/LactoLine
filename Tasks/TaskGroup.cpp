@@ -3,7 +3,7 @@
 
 #include <QVBoxLayout>
 
-TaskGroup::TaskGroup(const QString& title, std::vector<Tasks::TaskData>&& data, QWidget *parent)
+TaskGroup::TaskGroup(const QString& title, std::vector<Tasks::TaskData>&& data, TaskChangedObserver* observer, QWidget *parent)
     : QGroupBox{parent}
 {
     setFont(m_baseFont);
@@ -12,20 +12,16 @@ TaskGroup::TaskGroup(const QString& title, std::vector<Tasks::TaskData>&& data, 
     m_mainLayout = new QVBoxLayout(this);
     m_mainLayout->setSpacing(10);
 
-    std::ranges::for_each(data, [&](const auto& task){addWidget(task);});
+    std::ranges::for_each(data, [&](const auto& task){addWidget(task, observer);});
     setSpacing();
 }
 
-void TaskGroup::addWidget(const Tasks::TaskData& data)
+void TaskGroup::addWidget(const Tasks::TaskData& data, TaskChangedObserver* observer)
 {
     if (!std::ranges::any_of(m_tasks, [&](auto* widget){return data.getIdentifier() == widget->getTaskIdentifier();}))
     {
-        m_tasks.emplace_back(new TaskWidget(data, this));
+        m_tasks.emplace_back(new TaskWidget(data, observer, this));
         m_mainLayout->addWidget(m_tasks.back());
-        connect(m_tasks.back(),
-                &TaskWidget::taskDataChanged,
-                this,
-                [&](const ChangedData& data){emit sendChangedData(data);});
         int newWidth = m_tasks.back()->getTaskNameWidth();
         if (newWidth > m_maxLabelWidth)
             m_maxLabelWidth = newWidth;
@@ -60,4 +56,9 @@ TaskWidget* TaskGroup::getWidget(const QString& taskName)
         m_tasks.erase(iterator);
     }
     return widget;
+}
+
+bool TaskGroup::hasTasks() const
+{
+    return !m_tasks.empty();
 }

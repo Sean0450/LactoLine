@@ -24,14 +24,17 @@ class CurrentShiftTaskGroup: public TaskGroup
 private slots:
     void onAddTaskIndexChange();
     void onApplyAddingClick();
+    void onCreateTaskButtonClick();
 public:
     explicit CurrentShiftTaskGroup(const QString& title,
                                    std::vector<Tasks::TaskData>&& data,
+                                   TaskChangedObserver* observer,
                                    QWidget* parent = nullptr);
     void addToDoTaskData (QStringList&& data);
     void addTaskNames(const QStringList& names);
     void insertWidget(TaskWidget* widget);
 signals:
     void askTask(const QString& taskName);
+    void newTaskCreated(const Tasks::TaskData& data);
 };
 
