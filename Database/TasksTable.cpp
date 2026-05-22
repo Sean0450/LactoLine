@@ -62,30 +62,27 @@ bool TasksTable::addTask(const Tasks::TaskData& taskData)
     return result;
 }
 
-void TasksTable::updateTaskData(const ChangedData& data)
+void TasksTable::updateTaskData(std::unique_ptr<TaskDataChangedCommand>&& command)
 {
     try
     {
-        std::string request;
-        switch(data.flag)
-        {
-        case TaskDataChanged::NameChanged:
-            request = std::format(requests::updateTaskData, "Name", wrapString(std::get<std::string>(data.data)), data.identifier);
-            break;
-        case TaskDataChanged::StatusChanged:
-            request = std::format(requests::updateTaskData, "Priority", static_cast<int>(std::get<GeneralValues::PriorityStatus>(data.data)), data.identifier);
-            break;
-        case TaskDataChanged::DoneAmountChanged:
-            request = std::format(requests::updateTaskData, "CreatedProduct", std::get<double>(data.data), data.identifier);
-            break;
-        case TaskDataChanged::ToDoAmountChanged:
-            request = std::format(requests::updateTaskData, "ProductToDo", std::get<double>(data.data), data.identifier);
-            break;
-        }
-        SQLite::Statement query(m_database, request);
-        query.exec();
+        m_database.exec(std::format(requests::updateTaskData,
+                                    command->getChangingFieldName(),
+                                    command->getChangingField(),
+                                    command->getIdentifier()));
     }
     catch(std::exception& exc)
+    {
+    }
+}
+
+void TasksTable::updateDoneProduct(const GUI& gui, double doneProduct)
+{
+    try
+    {
+        m_database.exec(std::format(requests::updateTaskData, "CreatedProduct", doneProduct, gui));
+    }
+    catch (std::exception& exc)
     {
     }
 }

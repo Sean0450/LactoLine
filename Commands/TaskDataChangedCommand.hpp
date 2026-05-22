@@ -1,14 +1,17 @@
 ﻿#pragma once
 
 #include "Tasks/TaskData.hpp"
+#include "Tasks/Task.hpp"
 
 class TaskDataChangedCommand
 {
 protected:
-    static constexpr auto* s_updateTaskData {"UPDATE Tasks SET '{}' = {} WHERE GUI = '{}'"};
     Tasks::TaskData& m_data;
 public:
     TaskDataChangedCommand(Tasks::TaskData& data):m_data(data){}
     Tasks::TaskData getTaskData() const {return m_data;};
-    virtual std::string createRequest() = 0;
+    virtual Tasks::Task getUpdatedTask(Tasks::Task task) const = 0;
+    virtual std::string getChangingField() const = 0;
+    virtual std::string getChangingFieldName() const = 0;
+    GUI getIdentifier() const {return m_data.getIdentifier();}
 };

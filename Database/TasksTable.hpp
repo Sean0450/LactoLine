@@ -3,7 +3,7 @@
 #include <SQLiteCpp/SQLiteCpp.h>
 
 #include "Tasks/TaskData.hpp"
-#include "Tasks/ChangedData.hpp"
+#include "Commands/TaskDataChangedCommand.hpp"
 
 class TasksTable
 {
@@ -16,6 +16,7 @@ public:
     explicit TasksTable(const std::string& databaseName);
     bool isTableExist() const;
     bool addTask(const Tasks::TaskData& taskData);
-    void updateTaskData(const ChangedData& data);
+    void updateTaskData(std::unique_ptr<TaskDataChangedCommand>&& command);
+    void updateDoneProduct(const GUI& gui, double doneProduct);
     std::vector<Tasks::TaskData> getTasks() const;
 };
