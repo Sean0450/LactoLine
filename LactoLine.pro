@@ -14,9 +14,12 @@ INCLUDEPATH += $$PWD/third_party/sqlite3
 SOURCES += \
     Database/TasksTable.cpp \
     Date/Date.cpp \
+    Date/DateTranslator.cpp \
+    Dialogs/CreateTaskdialog.cpp \
     Dialogs/TaskDataDialog.cpp \
     Footer.cpp \
     GeneralValues/Amount.cpp \
+    GeneralValues/Gui.cpp \
     GeneralValues/Name.cpp \
     GeneralValues/Priority.cpp \
     GeneralValues/Progress.cpp \
@@ -27,6 +30,7 @@ SOURCES += \
     Tasks/Task.cpp \
     Tasks/TaskGroup.cpp \
     Tasks/TaskListWidget.cpp \
+    Tasks/TaskManager.cpp \
     Tasks/TaskWidget.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -41,11 +45,16 @@ SOURCES += \
 
 HEADERS += \
     Color.hpp \
+    Commands/TaskDataChangedCommand.hpp \
+    Commands/ToDoProductChangedCommand.hpp \
     Database/TasksTable.hpp \
     Date/Date.hpp \
+    Date/DateTranslator.hpp \
+    Dialogs/CreateTaskdialog.hpp \
     Dialogs/TaskDataDialog.hpp \
     Footer.hpp \
     GeneralValues/Amount.hpp \
+    GeneralValues/Gui.hpp \
     GeneralValues/Name.hpp \
     GeneralValues/Priority.hpp \
     GeneralValues/Progress.hpp \
@@ -53,12 +62,13 @@ HEADERS += \
     MainMeny.hpp \
     Product.hpp \
     Resources.hpp \
-    Tasks/ChangedData.hpp \
     Tasks/CurrentShiftTaskGroup.hpp \
     Tasks/Task.hpp \
+    Tasks/TaskChangedObserver.hpp \
     Tasks/TaskData.hpp \
     Tasks/TaskGroup.hpp \
     Tasks/TaskListWidget.hpp \
+    Tasks/TaskManager.hpp \
     Tasks/TaskWidget.hpp \
     mainwindow.hpp \
     third_party/include/SQLiteCpp/Assertion.h \
