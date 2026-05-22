@@ -7,9 +7,9 @@ namespace Resources
 namespace Styles
 {
 static constexpr auto* baseElementsStyle {"border: 2px solid grey;"
-                                         "border-radius: 5px;"
-                                         "text-align: center;"
-                                         "background-color: white;"};
+                                          "border-radius: 5px;"
+                                          "text-align: center;"
+                                          "background-color: white;"};
 static constexpr auto* pressedButtonStyle {"QPushButton:pressed {"
                                            "border: 5px solid grey;"
                                            "border-radius: 5px;"
@@ -27,6 +27,11 @@ static constexpr auto* dropDownComboBoxStyle {"QComboBox::drop-down {"
                                               "height: 12px;"
                                               "}"
                                             };
+static constexpr auto* redBorderLineEdit {"QLineEdit {"
+                                          "border: 2px solid red;"
+                                          "border-radius: 5px;"
+                                          "text-align: center;"
+                                          "background-color: white;}"};
 }
 static constexpr auto* baseFont {"Roboto"};
 static constexpr Color extraPriority {252, 61, 3, 255};
