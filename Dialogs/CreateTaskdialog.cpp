@@ -25,10 +25,7 @@ CreateTaskDialog::CreateTaskDialog(const QStringList& productName, QWidget *pare
                                                                 onLineEditCheck(m_taskName, m_isNameCorrect);});
 
     m_toDoAmount = createLineEdit();
-    connect(m_toDoAmount, &QLineEdit::textChanged, this, [this](){bool flag {true};
-                                                                  m_toDoAmount->text().toDouble(&flag);
-                                                                  m_isToDoCorrect = flag;
-                                                                  onLineEditCheck(m_toDoAmount, m_isToDoCorrect);});
+    connect(m_toDoAmount, &QLineEdit::textChanged, this, &CreateTaskDialog::onToDoAmountCheck);
 
     m_productName = createLineEdit();
     m_productNameCompleter = createCompleter();
@@ -46,9 +43,7 @@ CreateTaskDialog::CreateTaskDialog(const QStringList& productName, QWidget *pare
 
     m_releaseDate = createLineEdit();
     m_releaseDate->setText(QStringLiteral("xx.xx.xxxx"));
-    connect(m_releaseDate, &QLineEdit::textChanged, this, [this](){auto match = s_dateRegular.match(m_releaseDate->text());
-                                                                   m_isDateCorrect = match.hasMatch();
-                                                                   onLineEditCheck(m_releaseDate, m_isDateCorrect);});
+    connect(m_releaseDate, &QLineEdit::textChanged, this, &CreateTaskDialog::onReleaseDateCheck);
 
     mainLayout->addLayout(createLineEditLayout(QStringLiteral("Наименование задачи:"),    m_taskName));
     mainLayout->addLayout(createLineEditLayout(QStringLiteral("Наименование продукта:"),  m_productName));
@@ -57,7 +52,8 @@ CreateTaskDialog::CreateTaskDialog(const QStringList& productName, QWidget *pare
     mainLayout->addLayout(createLineEditLayout(QStringLiteral("Срок выполнения:"),        m_releaseDate));
 
     m_createTask = createTaskButton();
-    connect(m_createTask, &QPushButton::clicked, this, [this](){close();});
+    connect(m_createTask, &QPushButton::clicked, this, [this](){createTask();
+                                                                close();});
     m_createTask->setEnabled(false);
     auto* buttonLayout = new QHBoxLayout();
     buttonLayout->addStretch(1);
@@ -78,7 +74,22 @@ void CreateTaskDialog::checkToDoMoreThanDone()
         m_isDoneCorrect = done < toDo;
         if (!m_isDoneCorrect)
             m_doneAmout->setStyleSheet(Resources::Styles::redBorderLineEdit);
+        else
+            m_doneAmout->setStyleSheet(m_baseStyle);
     }
+}
+
+void CreateTaskDialog::onReleaseDateCheck()
+{
+    auto match = s_dateRegular.match(m_releaseDate->text());
+    const std::string currentDate = QDateTime::currentDateTime().toString(QLatin1String(Resources::dateParseFormat)).toStdString();
+    if (match.hasMatch())
+    {
+        m_isDateCorrect = DateTranslator::isReleaseDateCorrect(currentDate, m_releaseDate->text().toStdString());
+    }
+    else
+        m_isDateCorrect = false;
+    onLineEditCheck(m_releaseDate, m_isDateCorrect);
 }
 
 QLineEdit* CreateTaskDialog::createLineEdit()
@@ -86,6 +97,7 @@ QLineEdit* CreateTaskDialog::createLineEdit()
     auto* lineEdit = new QLineEdit(this);
     lineEdit->setStyleSheet(m_baseStyle);
     lineEdit->setFont(m_baseFont);
+    lineEdit->setMinimumWidth(250);
     return lineEdit;
 }
 
@@ -101,21 +113,25 @@ QHBoxLayout* CreateTaskDialog::createLineEditLayout(const QString& labelText, QL
     return layout;
 }
 
+void CreateTaskDialog::createTask()
+{
+    const std::string taskName = m_taskName->text().toStdString();
+    const std::string productName = m_productName->text().toStdString();
+    const std::string releaseDate = m_releaseDate->text().toStdString();
+    const double toDo = m_toDoAmount->text().toDouble();
+    const double done = m_doneAmout->text().toDouble();
+    const GeneralValues::GUI gui = GeneralValues::Gui::generateGui();
+    const std::string currentDate = QDateTime::currentDateTime().toString(QLatin1String(Resources::dateParseFormat)).toStdString();
+    const GeneralValues::PriorityStatus priority = DateTranslator::calculatePriority(currentDate, releaseDate);
+    m_createdTask = Tasks::TaskData{taskName, productName, releaseDate, priority, toDo, done, gui};
+}
+
 std::optional<Tasks::TaskData> CreateTaskDialog::getTaskData()
 {
     std::optional<Tasks::TaskData> result;
-    applyTaskCreation();
-    if (m_createTask->isEnabled())
+    if (m_createdTask.productToDoAmount >= s_minToDoAmount)
     {
-        const std::string taskName = m_taskName->text().toStdString();
-        const std::string productName = m_productName->text().toStdString();
-        const std::string releaseDate = m_releaseDate->text().toStdString();
-        const double toDo = m_toDoAmount->text().toDouble();
-        const double done = m_doneAmout->text().toDouble();
-        const GeneralValues::GUI gui = GeneralValues::Gui::generateGui();
-        const std::string currentDate = QDateTime::currentDateTime().toString(QStringLiteral("dd.MM.yyyy")).toStdString();
-        const GeneralValues::PriorityStatus priority = DateTranslator::calculatePriority(currentDate, releaseDate);
-        result = Tasks::TaskData{taskName, productName, releaseDate, priority, toDo, done, gui};
+        result = m_createdTask;
     }
     return result;
 }
@@ -142,6 +158,17 @@ void CreateTaskDialog::onLineEditCheck(QLineEdit* lineEdit, bool flag)
     else
         lineEdit->setStyleSheet(Resources::Styles::redBorderLineEdit);
     applyTaskCreation();
+}
+
+void CreateTaskDialog::onToDoAmountCheck()
+{
+    bool flag {true};
+    double toDo = m_toDoAmount->text().toDouble(&flag);
+    if (flag)
+    {
+        m_isToDoCorrect = toDo >= s_minToDoAmount;
+    }
+    onLineEditCheck(m_toDoAmount, m_isToDoCorrect);
 }
 
 void CreateTaskDialog::applyTaskCreation()

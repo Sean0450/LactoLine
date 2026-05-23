@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Color.hpp"
 
@@ -34,6 +34,7 @@ static constexpr auto* redBorderLineEdit {"QLineEdit {"
                                           "background-color: white;}"};
 }
 static constexpr auto* baseFont {"Roboto"};
+static constexpr auto* dateParseFormat {"dd.MM.yyyy"};
 static constexpr Color extraPriority {252, 61, 3, 255};
 static constexpr Color highPriority {255, 140, 0, 255};
 static constexpr Color mediumPriority {30, 144, 255, 255};
