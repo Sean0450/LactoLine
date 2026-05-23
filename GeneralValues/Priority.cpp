@@ -1,4 +1,4 @@
-#include "Priority.hpp"
+﻿#include "Priority.hpp"
 #include <stdexcept>
 
 namespace GeneralValues
@@ -23,10 +23,8 @@ void Priority::changeReleaseDate(const Date::Date& newReleaseDate, const Date::D
         m_prioity = PriorityStatus::Medium;
     else if (timeToComplete.isDistanceEqualOrMore(s_highProrityMarker))
         m_prioity = PriorityStatus::High;
-    else if (timeToComplete.isDistanceEqualOrMore(s_extraPriorityMarker))
-        m_prioity = PriorityStatus::Extra;
     else
-        throw std::runtime_error("Release date too close");
+        m_prioity = PriorityStatus::Extra;
 }
 
 PriorityStatus Priority::status() const

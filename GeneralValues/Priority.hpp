@@ -19,7 +19,6 @@ class Priority
     static constexpr Date::DateDistance s_lowPriorityMarker{0, 1, 0};
     static constexpr Date::DateDistance s_mediumPriorityMarker{14, 0, 0};
     static constexpr Date::DateDistance s_highProrityMarker {7, 0, 0};
-    static constexpr Date::DateDistance s_extraPriorityMarker {3, 0, 0};
     void changeReleaseDate(const Date::Date& newReleaseDate, const Date::Date& currentDate);
 public:
     Priority() = default;
