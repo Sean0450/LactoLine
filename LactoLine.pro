@@ -12,6 +12,7 @@ INCLUDEPATH += $$PWD/third_party/include
 INCLUDEPATH += $$PWD/third_party/sqlite3
 
 SOURCES += \
+    Database/ProductTable.cpp \
     Database/TasksTable.cpp \
     Date/Date.cpp \
     Date/DateTranslator.cpp \
@@ -47,6 +48,7 @@ HEADERS += \
     Color.hpp \
     Commands/TaskDataChangedCommand.hpp \
     Commands/ToDoProductChangedCommand.hpp \
+    Database/ProductTable.hpp \
     Database/TasksTable.hpp \
     Date/Date.hpp \
     Date/DateTranslator.hpp \

@@ -81,7 +81,7 @@ std::string Task::taskName() const
 
 std::string Task::productName() const
 {
-    return m_productToCreate.name().name();
+    return m_productToCreate.name();
 }
 
 int Task::taskPriority() const

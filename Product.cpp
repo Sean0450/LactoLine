@@ -1,4 +1,4 @@
-#include "Product.hpp"
+﻿#include "Product.hpp"
 
 #include <stdexcept>
 #include <cmath>
@@ -33,19 +33,19 @@ Product::Product(Name&& name,
     return std::trunc(amount.value() * m_primeCost * 100) / 100.0;
  }
 
-Name Product::name() const
+ std::string Product::name() const
 {
-    return m_name;
+    return m_name.name();
 }
 
-Name Product::category() const
+std::string Product::category() const
 {
-    return m_category;
+    return m_category.name();
 }
 
-Amount Product::unitRowMaterials() const
+double Product::unitRowMaterials() const
 {
-    return m_unitRawMaterials;
+    return m_unitRawMaterials.value();
 }
 
 void Product::changeUnitRawMaterials(Amount newUnitMaterials)

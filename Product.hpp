@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "GeneralValues/Name.hpp"
 #include "GeneralValues/Amount.hpp"
@@ -20,9 +20,9 @@ public:
                      double epsilon);
     bool compareOutput(Amount amount, Amount wastedRawMaterials) const;
     double calcPrimeCost(Amount amount) const;
-    Name name() const;
-    Name category() const;
-    Amount unitRowMaterials() const;
+    std::string name() const;
+    std::string category() const;
+    double unitRowMaterials() const;
     void changeUnitRawMaterials(Amount newUnitMaterials);
     double primeCost() const;
     void changePrimeCost(double newCost);
