@@ -109,7 +109,7 @@ void CurrentShiftTaskGroup::onCreateTaskButtonClick()
     std::optional<Tasks::TaskData> taskData = createTaskDialog.getTaskData();
     if (taskData)
     {
-        emit newTaskCreated(taskData.value());
+        emit newTaskCreated(taskData.value(), createTaskDialog.isTaskForCurrentShift());
     }
 }
 
@@ -138,8 +138,15 @@ void CurrentShiftTaskGroup::insertWidget(TaskWidget* widget)
         m_tasks.emplace_back(widget);
         int position = static_cast<int>(m_tasks.size()) - 1;
         m_mainLayout->insertWidget(position, m_tasks.back());
-        int newWidth = m_tasks.back()->getTaskNameWidth();
-        if (newWidth > m_maxLabelWidth)
-            m_maxLabelWidth = newWidth;
+    }
+}
+
+void CurrentShiftTaskGroup::addWidget(const Tasks::TaskData& data, TaskChangedObserver* observer)
+{
+    if (!std::ranges::any_of(m_tasks, [&](auto* element){return element->getTaskIdentifier() == data.getIdentifier();}))
+    {
+        m_tasks.emplace_back(new TaskWidget(data, observer, this));
+        int position = static_cast<int>(m_tasks.size()) - 1;
+        m_mainLayout->insertWidget(position, m_tasks.back());
     }
 }

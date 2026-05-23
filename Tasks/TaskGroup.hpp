@@ -17,12 +17,11 @@ class TaskGroup : public QGroupBox
 
 protected:
     std::vector<TaskWidget*> m_tasks;
-    int m_maxLabelWidth {0};
 
     QVBoxLayout* m_mainLayout {nullptr};
 public:
     explicit TaskGroup(const QString& title, std::vector<Tasks::TaskData>&& data, TaskChangedObserver* observer, QWidget *parent = nullptr);
-    void addWidget(const Tasks::TaskData& data, TaskChangedObserver* observer);
+    virtual void addWidget(const Tasks::TaskData& data, TaskChangedObserver* observer);
     void setEnabled(bool enabled);
     QStringList getTaskNames() const;
     TaskWidget* getWidget(const QString& taskName);

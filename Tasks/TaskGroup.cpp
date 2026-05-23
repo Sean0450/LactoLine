@@ -31,9 +31,6 @@ void TaskGroup::addWidget(const Tasks::TaskData& data, TaskChangedObserver* obse
     {
         m_tasks.emplace_back(new TaskWidget(data, observer, this));
         m_mainLayout->addWidget(m_tasks.back());
-        int newWidth = m_tasks.back()->getTaskNameWidth();
-        if (newWidth > m_maxLabelWidth)
-            m_maxLabelWidth = newWidth;
     }
 }
 

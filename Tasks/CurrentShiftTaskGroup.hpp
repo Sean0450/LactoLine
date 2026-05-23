@@ -34,8 +34,9 @@ public:
     void addToDoTaskData (QStringList&& data);
     void addTaskNames(const QStringList& names);
     void insertWidget(TaskWidget* widget);
+    void addWidget(const Tasks::TaskData& data, TaskChangedObserver* observer) override;
 signals:
     void askTask(const QString& taskName);
-    void newTaskCreated(const Tasks::TaskData& data);
+    void newTaskCreated(const Tasks::TaskData& data, bool isForCurrentShift);
 };
 
