@@ -5,7 +5,6 @@
 
 #include "Resources.hpp"
 #include "Tasks/TaskData.hpp"
-#include "ChangedData.hpp"
 
 QT_FORWARD_DECLARE_CLASS(QVBoxLayout)
 QT_FORWARD_DECLARE_CLASS(QGroupBox)
@@ -13,25 +12,25 @@ QT_FORWARD_DECLARE_CLASS(QGroupBox)
 class TaskWidget;
 class TaskGroup;
 class CurrentShiftTaskGroup;
+class TaskChangedObserver;
 
 class TaskListWidget : public QWidget
 {
     Q_OBJECT
-    std::vector<Tasks::TaskData> m_tasks;
     const QFont m_baseFont {Resources::baseFont, 16};
 
     QVBoxLayout* m_mainLayout {nullptr};
-    QGroupBox* m_toDoTasks {nullptr};
     TaskGroup* m_toDoTaskGroup {nullptr};
     CurrentShiftTaskGroup* m_currentShifTasktGroup {nullptr};
+    TaskChangedObserver* m_observer {nullptr};
 
-    void createWidgets();
+    void createWidgets(const std::vector<Tasks::TaskData>& tasks, TaskChangedObserver* observer);
     QGroupBox* createTasksGroup(const QString& title, const std::vector<TaskWidget*>& widgets, bool areEnabled = true);
 private slots:
     void moveTaskFromToDo(const QString& taskName);
-    void changeTaskData(const ChangedData& data);
+    void addNewTask(const Tasks::TaskData& data);
 public:
-    explicit TaskListWidget(const std::vector<Tasks::TaskData>& tasks, QWidget *parent = nullptr);
+    explicit TaskListWidget(const std::vector<Tasks::TaskData>& tasks, TaskChangedObserver* observer, QWidget *parent = nullptr);
 signals:
-    void taskDataChanged(const ChangedData& taskData);
+    void taskAdded(const Tasks::TaskData& data);
 };

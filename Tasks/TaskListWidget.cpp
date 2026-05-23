@@ -8,22 +8,24 @@
 #include <QProgressBar>
 #include <QGroupBox>
 
-TaskListWidget::TaskListWidget(const std::vector<Tasks::TaskData>& tasks, QWidget *parent)
+TaskListWidget::TaskListWidget(const std::vector<Tasks::TaskData>& tasks, TaskChangedObserver* observer, QWidget *parent)
     : QWidget{parent},
-      m_tasks(tasks)
+      m_observer(observer)
 {
     m_mainLayout = new QVBoxLayout(this);
-    createWidgets();
+    createWidgets(tasks, m_observer);
     if (m_toDoTaskGroup)
+    {
         m_currentShifTasktGroup->addTaskNames(m_toDoTaskGroup->getTaskNames());
+    }
 }
 
-void TaskListWidget::createWidgets()
+void TaskListWidget::createWidgets(const std::vector<Tasks::TaskData>& tasks, TaskChangedObserver* observer)
 {
     std::vector<Tasks::TaskData> currentTasks;
     std::vector<Tasks::TaskData> toDoTasks;
 
-    for (const auto& task: m_tasks)
+    for (const auto& task: tasks)
     {
         if (task.status > GeneralValues::PriorityStatus::Low)
             currentTasks.emplace_back(task);
@@ -31,29 +33,22 @@ void TaskListWidget::createWidgets()
             toDoTasks.emplace_back(task);
     }
 
-    if (!currentTasks.empty())
-    {
-        m_currentShifTasktGroup = new CurrentShiftTaskGroup("Задачи на текущую смену", std::move(currentTasks), this);
-        connect(m_currentShifTasktGroup,
-                &CurrentShiftTaskGroup::askTask,
-                this,
-                [&](const QString& name){moveTaskFromToDo(name);});
-        connect(m_currentShifTasktGroup,
-                &TaskGroup::sendChangedData,
-                this,
-                [&](const ChangedData& data){changeTaskData(data);});
+    m_currentShifTasktGroup = new CurrentShiftTaskGroup(QStringLiteral("Задачи на текущую смену"), std::move(currentTasks), observer, this);
+    connect(m_currentShifTasktGroup,
+            &CurrentShiftTaskGroup::askTask,
+            this,
+            [&](const QString& name){moveTaskFromToDo(name);});
+    connect(m_currentShifTasktGroup,
+            &CurrentShiftTaskGroup::newTaskCreated,
+            this,
+            [&](const auto& data){addNewTask(data);});
 
-        m_mainLayout->addWidget(m_currentShifTasktGroup);
-    }
+    m_mainLayout->addWidget(m_currentShifTasktGroup);
     if (!toDoTasks.empty())
     {
-        m_toDoTaskGroup = new TaskGroup("Задачи на перспективу", std::move(toDoTasks), this);
+        m_toDoTaskGroup = new TaskGroup(QStringLiteral("Задачи на перспективу"), std::move(toDoTasks), observer, this);
         m_toDoTaskGroup->setEnabled(false);
         m_mainLayout->addWidget(m_toDoTaskGroup);
-        connect(m_toDoTaskGroup,
-                &TaskGroup::sendChangedData,
-                this,
-                [&](const ChangedData& data){changeTaskData(data);});
     }
 }
 
@@ -66,31 +61,24 @@ void TaskListWidget::moveTaskFromToDo(const QString& taskName)
         widget->setEnabled(true);
         widget->show();
         m_currentShifTasktGroup->insertWidget(widget);
+        if (!m_toDoTaskGroup->hasTasks())
+            m_toDoTaskGroup->setVisible(false);
     }
 }
 
-void TaskListWidget::changeTaskData(const ChangedData& data)
+void TaskListWidget::addNewTask(const Tasks::TaskData& data)
 {
-    auto iterator = std::ranges::find_if(m_tasks, [data](const auto& task)
-                                         {return data.identifier == task.getIdentifier();});
-    if (iterator != std::ranges::end(m_tasks))
+    if (!m_toDoTaskGroup)
     {
-        Tasks::TaskData& task = *iterator;
-        switch(data.flag)
-        {
-        case TaskDataChanged::NameChanged:
-            task.taskName = std::get<std::string>(data.data);
-            break;
-        case TaskDataChanged::StatusChanged:
-            task.status = std::get<GeneralValues::PriorityStatus>(data.data);
-            break;
-        case TaskDataChanged::DoneAmountChanged:
-            task.doneProduct = std::get<double>(data.data);
-            break;
-        case TaskDataChanged::ToDoAmountChanged:
-            task.productToDoAmount = std::get<double>(data.data);
-            break;
-        }
-        emit taskDataChanged(data);
+        m_toDoTaskGroup = new TaskGroup(QStringLiteral("Задачи на перспективу"), {data}, m_observer, this);
+        m_mainLayout->addWidget(m_toDoTaskGroup);
     }
+    else
+    {
+        m_toDoTaskGroup->setVisible(true);
+        m_toDoTaskGroup->addWidget(data, m_observer);
+    }
+    m_currentShifTasktGroup->addTaskNames(m_toDoTaskGroup->getTaskNames());
+    m_toDoTaskGroup->setEnabled(false);
+    emit taskAdded(data);
 }
