@@ -117,6 +117,5 @@ void CurrentShiftTaskGroup::insertWidget(TaskWidget* widget)
         int newWidth = m_tasks.back()->getTaskNameWidth();
         if (newWidth > m_maxLabelWidth)
             m_maxLabelWidth = newWidth;
-        setSpacing();
     }
 }

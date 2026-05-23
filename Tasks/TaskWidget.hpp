@@ -1,11 +1,10 @@
-#pragma once
+﻿#pragma once
 
 #include <QWidget>
 #include <QFont>
 
 #include "Resources.hpp"
 #include "TaskData.hpp"
-#include "ChangedData.hpp"
 
 QT_FORWARD_DECLARE_CLASS(QLabel)
 QT_FORWARD_DECLARE_CLASS(QProgressBar)
@@ -13,12 +12,12 @@ QT_FORWARD_DECLARE_CLASS(QPushButton)
 QT_FORWARD_DECLARE_CLASS(QHBoxLayout)
 
 class LedIndicator;
+class TaskChangedObserver;
 
 class TaskWidget : public QWidget
 {
     Q_OBJECT
     static constexpr auto* s_progressToolTip {"Процент завершения задачи"};
-    static constexpr auto* s_addData {"Внести данные"};
     static constexpr int s_spacing {10};
     const QFont m_baseFont{Resources::baseFont, 12};
     Tasks::TaskData m_taskData;
@@ -29,7 +28,7 @@ class TaskWidget : public QWidget
     LedIndicator* m_priority {nullptr};
     QProgressBar* m_progressBar{nullptr};
     QPushButton* m_addTaskData {nullptr};
-    QHBoxLayout* m_rightLayout {nullptr};
+    TaskChangedObserver* m_taskChangedObserver {nullptr};
 
     QString constructCompleteString();
     void applyTaskData();
@@ -39,11 +38,12 @@ private slots:
     void onAddTaskDataClick();
 public:
     explicit TaskWidget(const Tasks::TaskData& taskData,
+                        TaskChangedObserver* observer,
                         QWidget *parent = nullptr);
     void setTaskData(Tasks::TaskData && taskData);
     int getTaskNameWidth() const;
     void addSpacing(int layoutSpacing);
+    void setObserver(TaskChangedObserver* observer);
+    std::string getTaskIdentifier() const;
     std::string getTaskName() const;
-signals:
-    void taskDataChanged(const ChangedData& data);
 };

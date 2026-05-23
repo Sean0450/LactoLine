@@ -2,6 +2,7 @@
 #include "TaskWidget.hpp"
 
 #include <QVBoxLayout>
+#include <QScrollArea>
 
 TaskGroup::TaskGroup(const QString& title, std::vector<Tasks::TaskData>&& data, TaskChangedObserver* observer, QWidget *parent)
     : QGroupBox{parent}
@@ -9,11 +10,19 @@ TaskGroup::TaskGroup(const QString& title, std::vector<Tasks::TaskData>&& data, 
     setFont(m_baseFont);
     setTitle(title);
 
-    m_mainLayout = new QVBoxLayout(this);
+    auto* scrollArea = new QScrollArea();
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+    auto* mainWidget = new QWidget();
+    scrollArea->setWidget(mainWidget);
+
+    m_mainLayout = new QVBoxLayout(mainWidget);
     m_mainLayout->setSpacing(10);
 
     std::ranges::for_each(data, [&](const auto& task){addWidget(task, observer);});
-    setSpacing();
+
+    auto* centralLayout = new QVBoxLayout(this);
+    centralLayout->addWidget(scrollArea);
 }
 
 void TaskGroup::addWidget(const Tasks::TaskData& data, TaskChangedObserver* observer)
@@ -26,12 +35,6 @@ void TaskGroup::addWidget(const Tasks::TaskData& data, TaskChangedObserver* obse
         if (newWidth > m_maxLabelWidth)
             m_maxLabelWidth = newWidth;
     }
-}
-
-void TaskGroup::setSpacing()
-{
-    std::ranges::for_each(m_tasks,
-                          [&](auto* widget){widget->addSpacing(m_maxLabelWidth - widget->getTaskNameWidth());});
 }
 
 void TaskGroup::setEnabled(bool enabled)

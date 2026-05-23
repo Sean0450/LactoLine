@@ -20,8 +20,6 @@ protected:
     int m_maxLabelWidth {0};
 
     QVBoxLayout* m_mainLayout {nullptr};
-
-    void setSpacing();
 public:
     explicit TaskGroup(const QString& title, std::vector<Tasks::TaskData>&& data, TaskChangedObserver* observer, QWidget *parent = nullptr);
     void addWidget(const Tasks::TaskData& data, TaskChangedObserver* observer);

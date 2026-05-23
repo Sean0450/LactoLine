@@ -1,4 +1,4 @@
-#include "TaskWidget.hpp"
+﻿#include "TaskWidget.hpp"
 #include <QLabel>
 #include <QProgressBar>
 #include <QHBoxLayout>
@@ -6,15 +6,18 @@
 
 #include "LedIndicator.hpp"
 #include "Dialogs/TaskDataDialog.hpp"
+#include "Commands/ToDoProductChangedCommand.hpp"
+#include "TaskChangedObserver.hpp"
 
 
 TaskWidget::TaskWidget(const Tasks::TaskData& taskData,
+                       TaskChangedObserver* observer,
                        QWidget *parent)
     : QWidget{parent},
-      m_taskData(taskData)
+      m_taskData(taskData),
+      m_taskChangedObserver(observer)
 {
     auto* mainLayout = new QVBoxLayout(this);
-    auto* mainTaskInfoLayout = new QHBoxLayout();
 
     auto* leftLayout = new QHBoxLayout();
     leftLayout->setSpacing(s_spacing);
@@ -25,33 +28,30 @@ TaskWidget::TaskWidget(const Tasks::TaskData& taskData,
     m_taskName = new QLabel(this);
     m_taskName->setFont(m_baseFont);
     leftLayout->addWidget(m_taskName);
-
-    m_rightLayout = new QHBoxLayout();
-    m_rightLayout->setSpacing(s_spacing);
-    m_rightLayout->addStretch();
+    leftLayout->addStretch(1);
 
     m_completeStatus = new QLabel(this);
     m_completeStatus->setFont(m_baseFont);
-    m_rightLayout->addWidget(m_completeStatus);
+    leftLayout->addWidget(m_completeStatus);
 
-    const QString style = QLatin1String(Resources::Styles::baseElementsStyle);
+    const QString style = QLatin1String(Resources::Styles::baseElementsStyle) + QStringLiteral("}");
 
     m_progressBar = new QProgressBar(this);
-    m_progressBar->setStyleSheet("QProgressBar {" + style + "}" +
-                                 "QProgressBar::chunk {"
+    m_progressBar->setStyleSheet(QStringLiteral("QProgressBar {") + style +
+                                 QStringLiteral("QProgressBar::chunk {"
                                  "background-color: #05B8CC;"
                                  "width: 10px;"
-                                 "}");
+                                 "}"));
     m_progressBar->setToolTip(QLatin1String(s_progressToolTip));
-    m_rightLayout->addWidget(m_progressBar);
+    leftLayout->addWidget(m_progressBar);
 
     m_addTaskData = new QPushButton(this);
     m_addTaskData->setFont(m_baseFont);
-    m_addTaskData->setText(s_addData);
-    m_addTaskData->setStyleSheet("QPushButton {" + style + "}" +
+    m_addTaskData->setText(QStringLiteral("Внести данные"));
+    m_addTaskData->setStyleSheet("QPushButton {" + style +
                                  QLatin1String(Resources::Styles::pressedButtonStyle));
     connect(m_addTaskData, &QPushButton::clicked, this, &TaskWidget::onAddTaskDataClick);
-    m_rightLayout->addWidget(m_addTaskData);
+    leftLayout->addWidget(m_addTaskData);
 
     m_releaseDate = new QLabel(this);
     m_releaseDate->setFont(m_baseFont);
@@ -61,22 +61,16 @@ TaskWidget::TaskWidget(const Tasks::TaskData& taskData,
     dateLayout->addSpacing(m_priority->width() + s_spacing);
     dateLayout->addWidget(m_releaseDate);
 
-    mainTaskInfoLayout->addLayout(leftLayout);
-    mainTaskInfoLayout->addLayout(m_rightLayout);
-
-    mainLayout->addLayout(mainTaskInfoLayout);
+    mainLayout->addLayout(leftLayout);
     mainLayout->addLayout(dateLayout);
+    mainLayout->addStretch(1);
+
     applyTaskData();
 }
 
 int TaskWidget::getTaskNameWidth() const
 {
     return m_taskName->text().size();
-}
-
-void TaskWidget::addSpacing(int layoutSpacing)
-{
-    m_rightLayout->insertSpacing(0, layoutSpacing);
 }
 
 QString TaskWidget::constructCompleteString()
@@ -97,15 +91,13 @@ void TaskWidget::onAddTaskDataClick()
     if (m_taskData.doneProduct < dialog.getCreatedProduct())
     {
         m_taskData.doneProduct = dialog.getCreatedProduct();
-        emit taskDataChanged({m_taskData.getIdentifier(),
-                              std::variant<std::string, int>(m_taskData.doneProduct),
-                              TaskDataChanged::DoneAmountChanged});
+        if (m_taskChangedObserver)
+            m_taskChangedObserver->doneProductAmountChanged(m_taskData.getIdentifier(), m_taskData.doneProduct);
         if (m_taskData.doneProduct > m_taskData.productToDoAmount)
         {
             m_taskData.productToDoAmount = m_taskData.doneProduct;
-            emit taskDataChanged({m_taskData.getIdentifier(),
-                                  std::variant<std::string, int>(m_taskData.productToDoAmount),
-                                  TaskDataChanged::ToDoAmountChanged});
+            if (m_taskChangedObserver)
+                m_taskChangedObserver->taskDataChanged(std::make_unique<ToDoProductChangedCommand>(m_taskData));
         }
         applyTaskData();
     }
@@ -167,7 +159,17 @@ void TaskWidget::setTaskData(Tasks::TaskData && taskData)
     applyTaskData();
 }
 
+std::string TaskWidget::getTaskIdentifier() const
+{
+    return m_taskData.getIdentifier();
+}
+
 std::string TaskWidget::getTaskName() const
 {
     return m_taskData.taskName;
+}
+
+void TaskWidget::setObserver(TaskChangedObserver* observer)
+{
+    m_taskChangedObserver = observer;
 }
