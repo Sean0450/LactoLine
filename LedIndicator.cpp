@@ -15,22 +15,22 @@ void LedIndicator::setColor(const Color& color)
     if (color == Resources::extraPriority)
     {
         m_color = color;
-        setToolTip(QString::fromUtf8(s_extraPriorityText));
+        setToolTip(QLatin1String(s_extraPriorityText));
     }
     else if (color == Resources::highPriority)
     {
         m_color = color;
-        setToolTip(QString::fromUtf8(s_highPriorityText));
+        setToolTip(QLatin1String(s_highPriorityText));
     }
     else if (color == Resources::mediumPriority )
     {
         m_color = color;
-        setToolTip(QString::fromUtf8(s_mediumPriorityText));
+        setToolTip(QLatin1String(s_mediumPriorityText));
     }
     else if (color == Resources::lowPriority)
     {
         m_color = color;
-        setToolTip(QString::fromUtf8(s_lowPriorityText));
+        setToolTip(QLatin1String(s_lowPriorityText));
     }
 }
 
