@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "TaskGroup.hpp"
 
@@ -20,6 +20,7 @@ class CurrentShiftTaskGroup: public TaskGroup
 
     void createAddTaskComboBox();
     void createTaskCreationButton();
+    void calcAddTaskWidth();
 
 private slots:
     void onAddTaskIndexChange();

@@ -61,6 +61,27 @@ void CurrentShiftTaskGroup::createTaskCreationButton()
     }
 }
 
+void CurrentShiftTaskGroup::calcAddTaskWidth()
+{
+    int maxLength {0};
+    QFontMetrics fm(m_baseFont);
+    for (const auto& name: m_toDoTasks)
+    {
+        int width = fm.horizontalAdvance(name);
+        if (width > maxLength)
+        {
+            maxLength = width;
+        }
+    }
+    if (maxLength > 0)
+    {
+        constexpr int spacingPixels {20};
+        maxLength += spacingPixels;
+        m_addTask->setMinimumWidth(maxLength);
+        m_addTask->setMaximumWidth(maxLength);
+    }
+}
+
 void CurrentShiftTaskGroup::onAddTaskIndexChange()
 {
     m_applyAdding->setVisible(true);
@@ -72,8 +93,10 @@ void CurrentShiftTaskGroup::onApplyAddingClick()
     if (currentIndex >= 0)
     {
         emit askTask(m_addTask->currentText());
-        m_addTask->removeItem(m_addTask->currentIndex());
+        m_addTask->removeItem(currentIndex);
         m_addTask->setCurrentIndex(-1);
+        m_toDoTasks.removeAt(currentIndex);
+        calcAddTaskWidth();
         m_applyAdding->setVisible(false);
     }
 }
@@ -103,6 +126,7 @@ void CurrentShiftTaskGroup::addTaskNames(const QStringList& names)
         m_addTask->clear();
         m_addTask->addItems(m_toDoTasks);
         m_addTask->setCurrentIndex(-1);
+        calcAddTaskWidth();
         m_applyAdding->setVisible(false);
     }
 }
