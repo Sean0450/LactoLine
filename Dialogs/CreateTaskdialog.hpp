@@ -11,6 +11,7 @@ QT_FORWARD_DECLARE_CLASS(QComboBox)
 QT_FORWARD_DECLARE_CLASS(QHBoxLayout)
 QT_FORWARD_DECLARE_CLASS(QPushButton)
 QT_FORWARD_DECLARE_CLASS(QCompleter)
+QT_FORWARD_DECLARE_CLASS(QCheckBox)
 
 class CreateTaskDialog : public QDialog
 {
@@ -35,6 +36,7 @@ class CreateTaskDialog : public QDialog
     QLineEdit* m_doneAmout {nullptr};
     QLineEdit* m_releaseDate {nullptr};
     QPushButton* m_createTask {nullptr};
+    QCheckBox* m_moveToCurrentShift {nullptr};
 
     QLineEdit* createLineEdit();
     QHBoxLayout* createLineEditLayout(const QString& labelText, QLineEdit* lineEdit);
@@ -51,4 +53,5 @@ private slots:
 public:
     explicit CreateTaskDialog(const QStringList& productName, QWidget *parent = nullptr);
     std::optional<Tasks::TaskData> getTaskData();
+    bool isTaskForCurrentShift() const;
 };

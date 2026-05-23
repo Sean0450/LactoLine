@@ -26,9 +26,10 @@ class TaskListWidget : public QWidget
 
     void createWidgets(const std::vector<Tasks::TaskData>& tasks, TaskChangedObserver* observer);
     QGroupBox* createTasksGroup(const QString& title, const std::vector<TaskWidget*>& widgets, bool areEnabled = true);
+    bool isTaskForCurrentShift(const Tasks::TaskData& data) const;
 private slots:
     void moveTaskFromToDo(const QString& taskName);
-    void addNewTask(const Tasks::TaskData& data);
+    void addNewTask(const Tasks::TaskData& data, bool isTaskForCurrentShift);
 public:
     explicit TaskListWidget(const std::vector<Tasks::TaskData>& tasks, TaskChangedObserver* observer, QWidget *parent = nullptr);
 signals:

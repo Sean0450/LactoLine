@@ -9,6 +9,7 @@
 #include <QStringList>
 #include <QPushButton>
 #include <QDateTime>
+#include <QCheckBox>
 
 CreateTaskDialog::CreateTaskDialog(const QStringList& productName, QWidget *parent)
     : QDialog{parent},
@@ -42,7 +43,7 @@ CreateTaskDialog::CreateTaskDialog(const QStringList& productName, QWidget *pare
                                                                  onLineEditCheck(m_doneAmout, m_isDoneCorrect);});
 
     m_releaseDate = createLineEdit();
-    m_releaseDate->setText(QStringLiteral("xx.xx.xxxx"));
+    m_releaseDate->setText(QDateTime::currentDateTime().toString(QLatin1String(Resources::dateParseFormat)));
     connect(m_releaseDate, &QLineEdit::textChanged, this, &CreateTaskDialog::onReleaseDateCheck);
 
     mainLayout->addLayout(createLineEditLayout(QStringLiteral("Наименование задачи:"),    m_taskName));
@@ -55,12 +56,17 @@ CreateTaskDialog::CreateTaskDialog(const QStringList& productName, QWidget *pare
     connect(m_createTask, &QPushButton::clicked, this, [this](){createTask();
                                                                 close();});
     m_createTask->setEnabled(false);
-    auto* buttonLayout = new QHBoxLayout();
-    buttonLayout->addStretch(1);
-    buttonLayout->addWidget(m_createTask);
+
+    m_moveToCurrentShift = new QCheckBox(QStringLiteral("Добавить к текущей смене"), this);
+    m_moveToCurrentShift->setFont(QFont(Resources::baseFont, 12));
+
+    auto* lowLayout = new QHBoxLayout();
+    lowLayout->addWidget(m_moveToCurrentShift);
+    lowLayout->addStretch(1);
+    lowLayout->addWidget(m_createTask);
 
     mainLayout->addSpacing(10);
-    mainLayout->addLayout(buttonLayout);
+    mainLayout->addLayout(lowLayout);
 }
 
 void CreateTaskDialog::checkToDoMoreThanDone()
@@ -134,6 +140,11 @@ std::optional<Tasks::TaskData> CreateTaskDialog::getTaskData()
         result = m_createdTask;
     }
     return result;
+}
+
+bool CreateTaskDialog::isTaskForCurrentShift() const
+{
+    return m_moveToCurrentShift->isChecked();
 }
 
 QPushButton* CreateTaskDialog::createTaskButton()

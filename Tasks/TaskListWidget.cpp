@@ -27,7 +27,7 @@ void TaskListWidget::createWidgets(const std::vector<Tasks::TaskData>& tasks, Ta
 
     for (const auto& task: tasks)
     {
-        if (task.status > GeneralValues::PriorityStatus::Low)
+        if (isTaskForCurrentShift(task))
             currentTasks.emplace_back(task);
         else
             toDoTasks.emplace_back(task);
@@ -41,7 +41,7 @@ void TaskListWidget::createWidgets(const std::vector<Tasks::TaskData>& tasks, Ta
     connect(m_currentShifTasktGroup,
             &CurrentShiftTaskGroup::newTaskCreated,
             this,
-            [&](const auto& data){addNewTask(data);});
+            [&](const auto& data, bool isForCurrentShift){addNewTask(data, isForCurrentShift);});
 
     m_mainLayout->addWidget(m_currentShifTasktGroup);
     if (!toDoTasks.empty())
@@ -50,6 +50,11 @@ void TaskListWidget::createWidgets(const std::vector<Tasks::TaskData>& tasks, Ta
         m_toDoTaskGroup->setEnabled(false);
         m_mainLayout->addWidget(m_toDoTaskGroup);
     }
+}
+
+bool TaskListWidget::isTaskForCurrentShift(const Tasks::TaskData& data) const
+{
+    return data.status > GeneralValues::PriorityStatus::Low || data.doneProduct > 0.0;
 }
 
 void TaskListWidget::moveTaskFromToDo(const QString& taskName)
@@ -66,19 +71,26 @@ void TaskListWidget::moveTaskFromToDo(const QString& taskName)
     }
 }
 
-void TaskListWidget::addNewTask(const Tasks::TaskData& data)
+void TaskListWidget::addNewTask(const Tasks::TaskData& data, bool isTaskForCurrentShift)
 {
-    if (!m_toDoTaskGroup)
+    if (isTaskForCurrentShift)
     {
-        m_toDoTaskGroup = new TaskGroup(QStringLiteral("Задачи на перспективу"), {data}, m_observer, this);
-        m_mainLayout->addWidget(m_toDoTaskGroup);
+        m_currentShifTasktGroup->addWidget(data, m_observer);
     }
     else
     {
-        m_toDoTaskGroup->setVisible(true);
-        m_toDoTaskGroup->addWidget(data, m_observer);
+        if (!m_toDoTaskGroup)
+        {
+            m_toDoTaskGroup = new TaskGroup(QStringLiteral("Задачи на перспективу"), {data}, m_observer, this);
+            m_mainLayout->addWidget(m_toDoTaskGroup);
+        }
+        else
+        {
+            m_toDoTaskGroup->setVisible(true);
+            m_toDoTaskGroup->addWidget(data, m_observer);
+        }
+        m_currentShifTasktGroup->addTaskNames(m_toDoTaskGroup->getTaskNames());
+        m_toDoTaskGroup->setEnabled(false);
     }
-    m_currentShifTasktGroup->addTaskNames(m_toDoTaskGroup->getTaskNames());
-    m_toDoTaskGroup->setEnabled(false);
     emit taskAdded(data);
 }
