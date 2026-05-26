@@ -1,6 +1,7 @@
 ﻿#include "CurrentShiftTaskGroup.hpp"
 #include "TaskWidget.hpp"
 #include "Dialogs/CreateTaskdialog.hpp"
+#include "Tasks/TaskChangedObserver.hpp"
 
 #include <QComboBox>
 #include <QPushButton>
@@ -103,7 +104,12 @@ void CurrentShiftTaskGroup::onApplyAddingClick()
 
 void CurrentShiftTaskGroup::onCreateTaskButtonClick()
 {
-    QStringList data {"Молоко 1.5л"};
+    auto productNames = m_observer->productNames();
+    QStringList data;
+    for (const auto& name: productNames)
+    {
+        data << QString::fromStdString(name);
+    }
     auto createTaskDialog = CreateTaskDialog(data, this);
     createTaskDialog.exec();
     std::optional<Tasks::TaskData> taskData = createTaskDialog.getTaskData();
