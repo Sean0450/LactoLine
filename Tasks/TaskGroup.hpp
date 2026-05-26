@@ -17,7 +17,7 @@ class TaskGroup : public QGroupBox
 
 protected:
     std::vector<TaskWidget*> m_tasks;
-
+    TaskChangedObserver* m_observer {nullptr};
     QVBoxLayout* m_mainLayout {nullptr};
 public:
     explicit TaskGroup(const QString& title, std::vector<Tasks::TaskData>&& data, TaskChangedObserver* observer, QWidget *parent = nullptr);
@@ -26,4 +26,5 @@ public:
     QStringList getTaskNames() const;
     TaskWidget* getWidget(const QString& taskName);
     bool hasTasks() const;
+    ~TaskGroup() = default;
 };

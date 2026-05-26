@@ -13,4 +13,5 @@ public:
     virtual std::string getChangingField() const = 0;
     virtual std::string getChangingFieldName() const = 0;
     virtual std::string getIdentifier() const = 0;
+    ~DataChangedCommand() = default;
 };
