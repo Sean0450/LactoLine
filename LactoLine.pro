@@ -12,11 +12,11 @@ INCLUDEPATH += $$PWD/third_party/include
 INCLUDEPATH += $$PWD/third_party/sqlite3
 
 SOURCES += \
-    Database/ProductTable.cpp \
-    Database/TasksTable.cpp \
     Date/Date.cpp \
     Date/DateTranslator.cpp \
+    Dialogs/CreateProductDialog.cpp \
     Dialogs/CreateTaskdialog.cpp \
+    Dialogs/DataCreationDialog.cpp \
     Dialogs/TaskDataDialog.cpp \
     Footer.cpp \
     GeneralValues/Amount.cpp \
@@ -26,7 +26,8 @@ SOURCES += \
     GeneralValues/Progress.cpp \
     LedIndicator.cpp \
     MainMeny.cpp \
-    Product.cpp \
+    Product/Product.cpp \
+    Product/ProductTreeModel.cpp \
     Tasks/CurrentShiftTaskGroup.cpp \
     Tasks/Task.cpp \
     Tasks/TaskGroup.cpp \
@@ -46,13 +47,17 @@ SOURCES += \
 
 HEADERS += \
     Color.hpp \
-    Commands/TaskDataChangedCommand.hpp \
+    Commands/DataChangedCommand.hpp \
+    Commands/DoneProductChangedCommand.hpp \
     Commands/ToDoProductChangedCommand.hpp \
+    Database/BaseTable.hpp \
     Database/ProductTable.hpp \
     Database/TasksTable.hpp \
     Date/Date.hpp \
     Date/DateTranslator.hpp \
+    Dialogs/CreateProductDialog.hpp \
     Dialogs/CreateTaskdialog.hpp \
+    Dialogs/DataCreationDialog.hpp \
     Dialogs/TaskDataDialog.hpp \
     Footer.hpp \
     GeneralValues/Amount.hpp \
@@ -62,7 +67,10 @@ HEADERS += \
     GeneralValues/Progress.hpp \
     LedIndicator.hpp \
     MainMeny.hpp \
-    Product.hpp \
+    Product/Product.hpp \
+    Product/ProductChangedObserver.hpp \
+    Product/ProductData.hpp \
+    Product/ProductTreeModel.hpp \
     Resources.hpp \
     Tasks/CurrentShiftTaskGroup.hpp \
     Tasks/Task.hpp \
