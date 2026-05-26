@@ -27,7 +27,7 @@ SOURCES += \
     LedIndicator.cpp \
     MainMeny.cpp \
     Product/Product.cpp \
-    Product/ProductTreeModel.cpp \
+    Product/ProductTableWidget.cpp \
     Tasks/CurrentShiftTaskGroup.cpp \
     Tasks/Task.cpp \
     Tasks/TaskGroup.cpp \
@@ -70,7 +70,7 @@ HEADERS += \
     Product/Product.hpp \
     Product/ProductChangedObserver.hpp \
     Product/ProductData.hpp \
-    Product/ProductTreeModel.hpp \
+    Product/ProductTableWidget.hpp \
     Resources.hpp \
     Tasks/CurrentShiftTaskGroup.hpp \
     Tasks/Task.hpp \
