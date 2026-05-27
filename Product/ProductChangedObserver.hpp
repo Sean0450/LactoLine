@@ -8,5 +8,5 @@ struct ProductChangedObserver
 {
     virtual std::vector<ProductData> getProductData() = 0;
     virtual void createProduct(const ProductData& data) = 0;
-    ~ProductChangedObserver() = default;
+    virtual ~ProductChangedObserver() = default;
 };

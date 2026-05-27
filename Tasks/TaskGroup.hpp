@@ -26,5 +26,5 @@ public:
     QStringList getTaskNames() const;
     TaskWidget* getWidget(const QString& taskName);
     bool hasTasks() const;
-    ~TaskGroup() = default;
+    virtual ~TaskGroup() = default;
 };
