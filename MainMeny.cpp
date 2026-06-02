@@ -1,4 +1,4 @@
-#include "MainMeny.hpp"
+﻿#include "MainMeny.hpp"
 
 #include <QListWidget>
 
@@ -6,9 +6,9 @@ MainMenu::MainMenu(QWidget *parent)
 {
     m_menu = new QListWidget(parent);
     createItem(s_taskList);
-    createItem(s_wareHouse);
     createItem(s_productList);
     createItem(s_shiftInformation);
+    createItem(s_invoiceCreation);
     setVisibleSettings();
 }
 

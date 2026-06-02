@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <QFont>
 #include "Resources.hpp"
@@ -8,10 +8,10 @@ QT_FORWARD_DECLARE_CLASS(QListWidget)
 class MainMenu
 {
     static inline constexpr auto* s_taskList {"Список задач"};
-    static inline constexpr auto* s_wareHouse {"Склад"};
+    static inline constexpr auto* s_invoiceCreation {"Формирование накладной"};
     static inline constexpr auto* s_productList {"Каталог товаров"};
     static inline constexpr auto* s_shiftInformation {"Статистика по сменам"};
-    static inline constexpr int s_minWidth {260};
+    static inline constexpr int s_minWidth {300};
     const QFont m_baseFont {Resources::baseFont, 16};
     QListWidget* m_menu {nullptr};
 
