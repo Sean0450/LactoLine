@@ -5,7 +5,8 @@
 #include <QScrollArea>
 
 TaskGroup::TaskGroup(const QString& title, std::vector<Tasks::TaskData>&& data, TaskChangedObserver* observer, QWidget *parent)
-    : QGroupBox{parent}
+    : QGroupBox{parent},
+      m_observer(observer)
 {
     setFont(m_baseFont);
     setTitle(title);
@@ -19,7 +20,7 @@ TaskGroup::TaskGroup(const QString& title, std::vector<Tasks::TaskData>&& data, 
     m_mainLayout = new QVBoxLayout(mainWidget);
     m_mainLayout->setSpacing(10);
 
-    std::ranges::for_each(data, [&](const auto& task){addWidget(task, observer);});
+    std::ranges::for_each(data, [&](const auto& task){TaskGroup::addWidget(task, observer);});
 
     auto* centralLayout = new QVBoxLayout(this);
     centralLayout->addWidget(scrollArea);

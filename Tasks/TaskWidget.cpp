@@ -92,7 +92,7 @@ void TaskWidget::onAddTaskDataClick()
     {
         m_taskData.doneProduct = dialog.getCreatedProduct();
         if (m_taskChangedObserver)
-            m_taskChangedObserver->doneProductAmountChanged(m_taskData.getIdentifier(), m_taskData.doneProduct);
+            m_taskChangedObserver->doneProductAmountChanged(m_taskData.getIdentifier(), dialog.getCreatedProduct(), dialog.getWastedRawMaterials());
         if (m_taskData.doneProduct > m_taskData.productToDoAmount)
         {
             m_taskData.productToDoAmount = m_taskData.doneProduct;
@@ -114,21 +114,26 @@ void TaskWidget::applyTaskData()
     if (m_priority && !isFinished)
     {
         Color color;
+        QString toolTipText;
         switch(m_taskData.status)
         {
         case GeneralValues::PriorityStatus::Extra:
-            color = Resources::extraPriority;
+            color = Resources::birghtRed;
+            toolTipText = QStringLiteral("Важнейшая задача");
             break;
         case GeneralValues::PriorityStatus::High:
-            color = Resources::highPriority;
+            color = Resources::brightOrange;
+            toolTipText = QStringLiteral("Приоритетная задача");
             break;
         case GeneralValues::PriorityStatus::Medium:
-            color = Resources::mediumPriority;
+            color = Resources::deepBlue;
+            toolTipText = QStringLiteral("Задача средней важности");
             break;
         case GeneralValues::PriorityStatus::Low:
-            color = Resources::lowPriority;
+            color = Resources::brightGreen;
+            toolTipText = QStringLiteral("Второстепенная задача");
         }
-        m_priority->setColor(color);
+        m_priority->setColor(color, toolTipText);
     }
 
     if (m_progressBar)
