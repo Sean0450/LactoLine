@@ -92,6 +92,7 @@ QList<QStandardItem*> ProductTableWidget::createItemFromData(const ProductData& 
     auto* productName = new QStandardItem(QString::fromStdString(data.productName));
     productName->setFont(m_baseFont);
     auto* primeCost = new QStandardItem(QString::number(data.unitRawMaterials) + materialName);
+    primeCost->setTextAlignment(Qt::AlignHCenter);
     primeCost->setFont(m_baseFont);
     childrenItem.append(productName);
     childrenItem.append(primeCost);
@@ -136,5 +137,4 @@ void ProductTableWidget::onAddProductClicked()
         m_productData.emplace_back(newProductData.value());
         m_observer->createProduct(newProductData.value());
     }
-
 }
