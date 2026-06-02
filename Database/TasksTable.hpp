@@ -18,10 +18,12 @@ class TasksTable: public BaseTable<Tasks::TaskData, DataChangedCommand<Tasks::Ta
                                           "Priority INTEGER,"
                                           "Product TEXT,"
                                           "ReleaseDate TEXT,"
+                                          "WastedRawMaterials REAL,"
                                           "CreatedProduct REAL)"};
-    static constexpr auto* s_insertTask{"INSERT INTO Tasks VALUES ('{}', '{}', {}, {}, '{}', '{}', {})"};
+    static constexpr auto* s_insertTask{"INSERT INTO Tasks VALUES ('{}', '{}', {}, {}, '{}', '{}', {}, {})"};
     static constexpr auto* s_selectActiveTask {"SELECT * FROM Tasks WHERE CreatedProduct < ProductToDo"};
     static constexpr auto* s_updateTaskData {"UPDATE Tasks SET '{}' = {} WHERE GUI = '{}'"};
+    static constexpr auto* s_updateDoneProduct {"UPDATE Tasks SET WastedRawMaterials = {}, CreatedProduct = {} WHERE GUI = '{}'"};
 public:
     explicit TasksTable(const std::string& databaseName): BaseTable(databaseName)
     {
@@ -45,7 +47,8 @@ public:
                                           static_cast<int>(taskData.status),
                                           taskData.productName,
                                           taskData.releaseDate,
-                                          taskData.doneProduct);
+                                          taskData.doneProduct,
+                                          taskData.wastedRawMaterials);
             m_database.exec(str);
         }
         catch (std::exception& exception)
@@ -79,7 +82,7 @@ public:
             SQLite::Statement query(m_database, s_selectActiveTask);
             auto now = std::chrono::system_clock::now();
             year_month_day date{std::chrono::floor<days>(now)};
-            Date::Date currentDate(DateTranslator::fromChronoDateFormat(date));
+            Date::Date currentDate(DateTranslator::getModelCurrentDate());
             while (query.executeStep())
             {
                 const std::string releaseDate = query.getColumn(5);
@@ -90,14 +93,32 @@ public:
                     const double productToDo = query.getColumn(2);
                     const GeneralValues::PriorityStatus priority {static_cast<int>(query.getColumn(3))};
                     const std::string product = query.getColumn(4);
-                    const double createdProduct = query.getColumn(6);
-                    Tasks::TaskData taskData{taskName, product, releaseDate, priority, productToDo, createdProduct, gui};
+                    const double wastedRawMaterials = query.getColumn(6);
+                    const double createdProduct = query.getColumn(7);
+                    Tasks::TaskData taskData{taskName, product, releaseDate, priority, productToDo, createdProduct, wastedRawMaterials, gui};
                     result.emplace_back(std::move(taskData));
                 }
             }
         }
         catch(std::exception& exception)
         {
+        }
+        return result;
+    }
+
+    bool doneProductAmountChanged(const GUI& gui, double doneProduct, double wastedRawMaterials)
+    {
+        bool result {true};
+        try
+        {
+            m_database.exec(std::format(s_updateDoneProduct,
+                                        wastedRawMaterials,
+                                        doneProduct,
+                                        gui));
+        }
+        catch(std::exception& exc)
+        {
+            result = false;
         }
         return result;
     }
