@@ -36,10 +36,16 @@ CreateTaskDialog::CreateTaskDialog(const QStringList& productName, QWidget *pare
                                                                                checkToDoMoreThanDone();
                                                                                return flag;});
 
+    auto* wastedRawMaterials = createLineEdit();
+    wastedRawMaterials->setText(QStringLiteral("0"));
+    createLineEditLayout(wastedRawMaterials, QStringLiteral("Затраченное сырье: "), [&](){bool flag {true};
+                                                                                          m_lineEdits[s_wastedRawMaterialsIndex]->text().toDouble(&flag);
+                                                                                          return flag;});
+
     auto* releaseDate = createLineEdit();
     releaseDate->setText(QDateTime::currentDateTime().toString(QLatin1String(Resources::dateParseFormat)));
     createLineEditLayout(releaseDate, QStringLiteral("Срок выполнения:"), [&](){auto match = s_dateRegular.match(m_lineEdits[s_releaseDateIndex]->text());
-                                                                                const std::string currentDate = QDateTime::currentDateTime().toString(QLatin1String(Resources::dateParseFormat)).toStdString();
+                                                                                const std::string currentDate = DateTranslator::getCurrentDate();
                                                                                 return match.hasMatch() && DateTranslator::isReleaseDateCorrect(currentDate, m_lineEdits[s_releaseDateIndex]->text().toStdString());});
 
     createButton(QStringLiteral("Создать задачу"), [&](){createTask();});
@@ -74,7 +80,8 @@ void CreateTaskDialog::createTask()
     const GeneralValues::GUI gui = GeneralValues::Gui::generateGui();
     const std::string currentDate = QDateTime::currentDateTime().toString(QLatin1String(Resources::dateParseFormat)).toStdString();
     const GeneralValues::PriorityStatus priority = DateTranslator::calculatePriority(currentDate, releaseDate);
-    m_createdTask = Tasks::TaskData{taskName, productName, releaseDate, priority, toDo, done, gui};
+    const double wastedRawMaterials = m_lineEdits[s_wastedRawMaterialsIndex]->text().toDouble();
+    m_createdTask = Tasks::TaskData{taskName, productName, releaseDate, priority, toDo, done, wastedRawMaterials, gui};
 }
 
 std::optional<Tasks::TaskData> CreateTaskDialog::getTaskData()

@@ -23,7 +23,8 @@ class CreateTaskDialog : public DataCreationDialog
     static constexpr int s_toDoIndex {1};
     static constexpr int s_productNameIndex {2};
     static constexpr int s_doneIndex {3};
-    static constexpr int s_releaseDateIndex {4};
+    static constexpr int s_wastedRawMaterialsIndex {4};
+    static constexpr int s_releaseDateIndex {5};
 
     Tasks::TaskData m_createdTask;
     QCompleter* m_productNameCompleter {nullptr};

@@ -3,7 +3,7 @@
 #include "../GeneralValues/Amount.hpp"
 #include "../GeneralValues/Progress.hpp"
 #include "../GeneralValues/Priority.hpp"
-#include "../Product.hpp"
+#include "../Product/Product.hpp"
 #include "../GeneralValues/Gui.hpp"
 
 namespace Tasks
@@ -19,6 +19,7 @@ class Task
     Date::Date m_releaseDate;
     Progress m_taskProgress;
     Amount m_createdProduct;
+    Amount m_wastedRawMaterials;
 public:
     Task()=default;
     Task(const GUI& gui,
@@ -27,7 +28,7 @@ public:
          Priority&& taskPriority,
          Product&& productToCreate,
          Date::Date&& releaseDate);
-    void addData(Amount doneProductAmount);
+    void addData(Amount doneProductAmount, Amount rawMaterials);
     bool isTaskDone() const;
     void changeTaskPriority(PriorityStatus newPriorityStatus);
     void changeReleaseDate(const Date::Date& newReleaseDate, const Date::Date& currentDate);
@@ -40,5 +41,7 @@ public:
     int taskPriority() const;
     std::string releaseDate() const;
     double createdProduct() const;
+    double productAmount() const;
+    double wastedRawMaterials() const;
 };
 }

@@ -23,11 +23,12 @@ bool Task::isTaskDone() const
     return m_taskProgress.completed() >= 100.0;
 }
 
-void Task::addData(Amount doneProductAmount)
+void Task::addData(Amount doneProductAmount, Amount rawMaterials)
 {
     if (!isTaskDone())
     {
         m_createdProduct = Amount{ m_createdProduct.value() + doneProductAmount.value() };
+        m_wastedRawMaterials = Amount {m_wastedRawMaterials.value() + rawMaterials.value()};
         m_taskProgress.changeCurrentResult(m_createdProduct);
     }
 }
@@ -97,5 +98,15 @@ std::string Task::releaseDate() const
 double Task::createdProduct() const
 {
     return m_createdProduct.value();
+}
+
+double Task::productAmount() const
+{
+    return m_productAmount.value();
+}
+
+double Task::wastedRawMaterials() const
+{
+    return m_wastedRawMaterials.value();
 }
 }

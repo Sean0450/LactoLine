@@ -15,6 +15,7 @@ struct TaskData
     GeneralValues::PriorityStatus status;
     double productToDoAmount {0.0};
     double doneProduct {0.0};
+    double wastedRawMaterials {0.0};
 
     explicit TaskData() = default;
     explicit TaskData(const std::string& taskName,
@@ -23,12 +24,14 @@ struct TaskData
                       GeneralValues::PriorityStatus status,
                       double productToDoAmount,
                       double doneProduct,
+                      double wastedRawMaterials,
                       const GeneralValues::GUI& identifier):taskName(taskName),
                                                             productName(productName),
                                                             releaseDate(releaseDate),
                                                             status(status),
                                                             productToDoAmount(productToDoAmount),
                                                             doneProduct(doneProduct),
+                                                            wastedRawMaterials(wastedRawMaterials),
                                                             identifier(identifier)
     {
     }
