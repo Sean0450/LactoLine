@@ -26,8 +26,12 @@ SOURCES += \
     GeneralValues/Progress.cpp \
     LedIndicator.cpp \
     MainMeny.cpp \
+    PackingList/GoodWidget..cpp \
+    PackingList/PackingListWidget.cpp \
     Product/Product.cpp \
     Product/ProductTableWidget.cpp \
+    Shifts/ShiftTableView.cpp \
+    Shifts/ShiftTaskInformation.cpp \
     Tasks/CurrentShiftTaskGroup.cpp \
     Tasks/Task.cpp \
     Tasks/TaskGroup.cpp \
@@ -48,10 +52,10 @@ SOURCES += \
 HEADERS += \
     Color.hpp \
     Commands/DataChangedCommand.hpp \
-    Commands/DoneProductChangedCommand.hpp \
     Commands/ToDoProductChangedCommand.hpp \
     Database/BaseTable.hpp \
     Database/ProductTable.hpp \
+    Database/ShiftsTable.hpp \
     Database/TasksTable.hpp \
     Date/Date.hpp \
     Date/DateTranslator.hpp \
@@ -67,11 +71,18 @@ HEADERS += \
     GeneralValues/Progress.hpp \
     LedIndicator.hpp \
     MainMeny.hpp \
+    PackingList/GoodWidget.hpp \
+    PackingList/PackingListObserver.hpp \
+    PackingList/PackingListWidget.hpp \
     Product/Product.hpp \
     Product/ProductChangedObserver.hpp \
     Product/ProductData.hpp \
     Product/ProductTableWidget.hpp \
     Resources.hpp \
+    Shifts/ShiftData.hpp \
+    Shifts/ShiftTableView.hpp \
+    Shifts/ShiftTaskInformation.hpp \
+    Shifts/ShiftTaskInformationObserver.hpp \
     Tasks/CurrentShiftTaskGroup.hpp \
     Tasks/Task.hpp \
     Tasks/TaskChangedObserver.hpp \

@@ -1,4 +1,4 @@
-#include "mainwindow.hpp"
+﻿#include "mainwindow.hpp"
 
 #include <QApplication>
 #include <QLocale>
@@ -7,8 +7,9 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
-    w.setStyleSheet("background-color: #F0F8FF;");
-    w.show();
+    auto taskManager = std::make_shared<Tasks::TaskManager>();
+    MainWindow mainWindow(taskManager);
+    mainWindow.setStyleSheet("background-color: #F0F8FF;");
+    mainWindow.show();
     return a.exec();
 }
