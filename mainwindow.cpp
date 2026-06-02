@@ -46,7 +46,7 @@ MainWindow::MainWindow(std::weak_ptr<Tasks::TaskManager> taskManager, QWidget *p
     mainLayout->addWidget(m_pagesList->getListObject());
     mainLayout->setStretchFactor(m_pagesList->getListObject(), 2);
     mainLayout->addLayout(verticalLayout);
-    mainLayout->setStretchFactor(verticalLayout, 2);
+    mainLayout->setStretchFactor(verticalLayout, 4);
     setCentralWidget(centralWidget);
 }
 
