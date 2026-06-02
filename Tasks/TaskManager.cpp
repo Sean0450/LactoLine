@@ -4,7 +4,7 @@
 
 namespace Tasks
 {
-TaskManager::TaskManager():m_taskTable(s_taskTableName), m_productTable(s_productTableName)
+TaskManager::TaskManager():m_taskTable(s_taskTableName), m_productTable(s_productTableName), m_shiftsTable(s_shiftTasksTableName)
 {
     readProductFromtable();
     readTasksFromTable();
@@ -30,7 +30,7 @@ std::optional<Task> TaskManager::fromDataToTask(const TaskData& data)
                   std::move(releaseDate));
         if (data.doneProduct > 0.0)
         {
-            task.addData(Amount(data.doneProduct));
+            task.addData(Amount(data.doneProduct), Amount(data.wastedRawMaterials));
         }
         outputTask = std::move(task);
     }
@@ -50,7 +50,8 @@ TaskData TaskManager::fromTaskToData(const Task& task) const
     GeneralValues::PriorityStatus status = static_cast<GeneralValues::PriorityStatus>(task.taskPriority());
     double doneProduct = task.createdProduct();
     double productToDoAmount = task.leftToDo() + doneProduct;
-    return TaskData{taskName, productName, releaseDate, status, productToDoAmount, doneProduct, gui};
+    double wastedRawMaterials = task.wastedRawMaterials();
+    return TaskData{taskName, productName, releaseDate, status, productToDoAmount, doneProduct, wastedRawMaterials, gui};
 }
 
 void TaskManager::readTasksFromTable()
@@ -159,7 +160,16 @@ void TaskManager::taskDataChanged(std::unique_ptr<DataChangedCommand<Tasks::Task
     auto iterator = std::ranges::find_if(m_tasks, [gui](const auto& task){return task.gui() == gui;});
     if (iterator != std::ranges::end(m_tasks))
     {
-        *iterator = command->getUpdatedTask(*iterator);
+        auto updatedTask = command->getUpdatedTask(*iterator);
+        Date::Date currentDate(DateTranslator::getModelCurrentDate());
+        auto shiftData = ShiftData(currentDate.getDate(),
+                                   iterator->taskName(),
+                                   updatedTask.createdProduct() - iterator->createdProduct(),
+                                   iterator->productAmount(),
+                                   updatedTask.isTaskDone(),
+                                   GeneralValues::Gui::generateGui());
+        m_shiftsTable.addTaskInfo(shiftData);
+        *iterator = updatedTask;
         m_taskTable.updateData(std::move(command));
     }
 }
@@ -172,5 +182,38 @@ std::vector<std::string> TaskManager::productNames()
         names.emplace_back(product.name());
     }
     return names;
+}
+
+std::vector<ShiftData> TaskManager::getTasksData(const std::string& data)
+{
+    std::vector<ShiftData> shiftTasks = m_shiftsTable.getData(Date::Date(data));
+    return shiftTasks;
+}
+
+void TaskManager::generatePackingListDocumentation(const std::vector<std::string>& goods)
+{
+
+}
+std::vector<std::string> TaskManager::getProductNames()
+{
+    return productNames();
+}
+
+void TaskManager::doneProductAmountChanged(const GUI& gui, double doneAmount, double rawMaterial)
+{
+    auto iterator = std::ranges::find_if(m_tasks, [gui](const auto& task){return task.gui() == gui;});
+    if (iterator != std::ranges::end(m_tasks))
+    {
+        double previosDone = iterator->createdProduct();
+        iterator->addData(Amount(doneAmount), Amount(rawMaterial));
+        auto shiftData = ShiftData(DateTranslator::getModelCurrentDate(),
+                                   iterator->taskName(),
+                                   iterator->createdProduct() - previosDone,
+                                   iterator->productAmount(),
+                                   iterator->isTaskDone(),
+                                   GeneralValues::Gui::generateGui());
+        m_shiftsTable.addTaskInfo(shiftData);
+        m_taskTable.doneProductAmountChanged(gui, doneAmount, rawMaterial);
+    }
 }
 }

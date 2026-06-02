@@ -10,19 +10,26 @@
 #include "TaskChangedObserver.hpp"
 #include "Product/ProductData.hpp"
 #include "Product/ProductChangedObserver.hpp"
+#include "Shifts/ShiftTaskInformationObserver.hpp"
+#include "Database/ShiftsTable.hpp"
+#include "PackingList/PackingListObserver.hpp"
 
 namespace Tasks
 {
 class TaskManager: public TaskChangedObserver,
-                   public ProductChangedObserver
+                   public ProductChangedObserver,
+                   public ShiftTaskInformationObserver,
+                   public PackingListObserver
 {
     static constexpr auto* s_taskTableName {"Tasks.db3"};
     static constexpr auto* s_productTableName {"Product.db3"};
+    static constexpr auto* s_shiftTasksTableName {"ShiftInfo.db3"};
 
     std::vector<Task> m_tasks;
     std::vector<Product> m_products;
     TasksTable m_taskTable;
     ProductTable m_productTable;
+    ShiftsTable m_shiftsTable;
 
     std::optional<Task> fromDataToTask(const TaskData& data);
     TaskData fromTaskToData(const Task& task) const;
@@ -34,9 +41,13 @@ public:
     explicit TaskManager();
     void addTask(const TaskData& taskData);
     std::vector<TaskData> getCurrentShiftTaskData() const;
+    void doneProductAmountChanged(const GUI& gui, double doneAmount, double rawMaterial) override;
     std::vector<ProductData> getProductData() override;
     void createProduct(const ProductData& data) override;
     void taskDataChanged(std::unique_ptr<DataChangedCommand<Tasks::TaskData, Tasks::Task>>&& command) override;
     std::vector<std::string> productNames() override;
+    std::vector<ShiftData> getTasksData(const std::string& data) override;
+    void generatePackingListDocumentation(const std::vector<std::string>& goods) override;
+    std::vector<std::string> getProductNames() override;
 };
 }
