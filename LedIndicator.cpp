@@ -1,4 +1,4 @@
-#include "LedIndicator.hpp"
+﻿#include "LedIndicator.hpp"
 
 #include <QPainter>
 
@@ -10,28 +10,29 @@ LedIndicator::LedIndicator(QWidget *parent)
     setFixedSize(20, 20);
 }
 
-void LedIndicator::setColor(const Color& color)
+void LedIndicator::setColor(const Color& color, const QString& toolTipText)
 {
-    if (color == Resources::extraPriority)
+    if (color == Resources::birghtRed)
     {
         m_color = color;
-        setToolTip(QLatin1String(s_extraPriorityText));
     }
-    else if (color == Resources::highPriority)
+    else if (color == Resources::brightOrange)
     {
         m_color = color;
-        setToolTip(QLatin1String(s_highPriorityText));
     }
-    else if (color == Resources::mediumPriority )
+    else if (color == Resources::deepBlue )
     {
         m_color = color;
-        setToolTip(QLatin1String(s_mediumPriorityText));
     }
-    else if (color == Resources::lowPriority)
+    else if (color == Resources::brightGreen)
     {
         m_color = color;
-        setToolTip(QLatin1String(s_lowPriorityText));
     }
+    else if (color == Resources::classicGreen)
+    {
+        m_color = color;
+    }
+    setToolTip(toolTipText);
 }
 
 void LedIndicator::paintEvent(QPaintEvent *event)
