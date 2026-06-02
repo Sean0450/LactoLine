@@ -42,7 +42,7 @@ Date::Date(std::string_view date)
 void Date::setDate(std::string_view date)
 {
     if (!std::regex_match(date.begin(), date.end(), s_dateTemplate) || !m_distance.empty())
-        throw std::runtime_error("It is not a date");
+        throw std::runtime_error("Вы ввели не дату");
 
     m_distance.day = std::stoi(date.substr(0, 2).data());
     m_distance.month = std::stoi(date.substr(3, 2).data());
@@ -50,7 +50,7 @@ void Date::setDate(std::string_view date)
     if (dayCount(static_cast<MonthName>(m_distance.month), m_distance.year) < m_distance.day)
     {
         m_distance = DateDistance();
-        throw std::runtime_error("Invalid days count");
+        throw std::runtime_error("Неверное количество дней в месяце");
     }
 }
 
