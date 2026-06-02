@@ -1,6 +1,10 @@
 ﻿#include "DateTranslator.hpp"
-
 #include "Date.hpp"
+#include "Resources.hpp"
+
+#include <chrono>
+#include <QDateTime>
+#include <QMessageBox>
 
 GeneralValues::PriorityStatus DateTranslator::calculatePriority(const std::string& viewDateFormat, const std::string& releaseDate)
 {
@@ -10,13 +14,34 @@ GeneralValues::PriorityStatus DateTranslator::calculatePriority(const std::strin
 
 bool DateTranslator::isReleaseDateCorrect(const std::string& currentDate, const std::string& releaseDate)
 {
-    const Date::Date current {currentDate};
-    const Date::Date release {releaseDate};
-    return release.isDateMore(current);
+    bool result {true};
+    try
+    {
+        const Date::Date current {currentDate};
+        const Date::Date release {releaseDate};
+        result = release.isDateMore(current);
+    }
+    catch(std::exception& exc)
+    {
+        result = false;
+        QMessageBox::warning(nullptr,
+                             QStringLiteral("Ошибка ввода даты"),
+                             QString::fromStdString(exc.what()));
+    }
+    return result;
 }
 
-std::string DateTranslator::fromChronoDateFormat(const std::chrono::year_month_day& date)
+bool DateTranslator::isCurrentDateMoreOrEqual(const std::string& currentDate, const std::string& dateToCompare)
 {
+    const Date::Date current {currentDate};
+    const Date::Date compareDate {dateToCompare};
+    return current.isDateMore(compareDate);
+}
+
+std::string DateTranslator::getModelCurrentDate()
+{
+    auto now = std::chrono::system_clock::now();
+    std::chrono::year_month_day date{std::chrono::floor<std::chrono::days>(now)};
     std::string correctDate;
     constexpr int dateLength {10};
     constexpr auto spliter {'.'};
@@ -36,4 +61,9 @@ std::string DateTranslator::fromChronoDateFormat(const std::chrono::year_month_d
     correctDate += spliter;
     correctDate += std::to_string(year);
     return correctDate;
+}
+
+std::string DateTranslator::getCurrentDate()
+{
+    return QDateTime::currentDateTime().toString(QLatin1String(Resources::dateParseFormat)).toStdString();
 }
