@@ -1,25 +1,41 @@
 ﻿#include "Progress.hpp"
-#include "Amount.hpp"
+#include "FundamentalTypes.hpp"
 
 #include <stdexcept>
 
 namespace GeneralValues
 {
-Progress::Progress(Amount currentResult, Amount goal):m_currentResult(std::move(currentResult))
+Progress::Progress(Amount currentResult, Amount goal, Amount wastedRawMaterials)
 {
+    checkAmount(currentResult);
+    m_currentResult = currentResult;
     checkGoal(goal);
-    m_goal = std::move(goal);
+    m_goal = goal;
+    checkAmount(wastedRawMaterials);
+    m_wastedRawMaterials = wastedRawMaterials;
 }
 
-void Progress::checkGoal(Amount goal) const
+void Progress::checkAmount(Amount amountValue) const
 {
-    if (goal.value() < s_minGoalValue)
-        throw std::runtime_error("Error goal value");
+    if (amountValue < 0.0)
+        throw std::runtime_error("Количество не может быть отрицательным числом");
 }
 
-void Progress::changeCurrentResult(Amount newResult)
+void Progress::checkGoal(Amount newGoal)
 {
-    m_currentResult = newResult;
+    if (newGoal < s_minGoalValue)
+        throw std::runtime_error("Целевое количество продукции не может быть меньше 1");
+}
+
+void Progress::changeCurrentResult(Amount newResult, Amount wastedRawMaterials)
+{
+    checkAmount(newResult);
+    checkAmount(wastedRawMaterials);
+    if (newResult + m_currentResult <= m_goal)
+    {
+        m_currentResult += newResult;
+        m_wastedRawMaterials += wastedRawMaterials;
+    }
 }
 
 void Progress::changeGoal(Amount goal)
@@ -28,14 +44,14 @@ void Progress::changeGoal(Amount goal)
     m_goal = goal;
 }
 
-double Progress::completed() const
+std::tuple<Amount, Amount, Amount> Progress::getAmountData() const
 {
-    checkGoal(m_goal);
-    double result {m_currentResult.value() / m_goal.value()};
-    if (result > 1.0)
-        result = 100.0;
-    else
-        result *= 100.0;
-    return result;
+    return {m_currentResult, m_goal, m_wastedRawMaterials};
+}
+
+bool Progress::isCompleted() const
+{
+    double result {m_currentResult / m_goal};
+    return result >= 1.0;
 }
 }
