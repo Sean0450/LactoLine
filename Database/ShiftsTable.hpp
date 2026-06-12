@@ -19,7 +19,7 @@ class ShiftsTable
     static constexpr auto* s_addTaskInfo {"INSERT INTO ShiftsInfo VALUES ('{}', '{}', '{}', {}, {}, {})"};
     static constexpr auto* s_selectShifData {"SELECT * FROM ShiftsInfo WHERE Date = '{}'"};
     static constexpr auto* s_selectConcreteTaskData {"SELECT * FROM ShiftsInfo WHERE Date = '{}' AND TaskName = '{}'"};
-    static constexpr auto* s_updateExistingValue {"UPDATE ShiftsInfo SET (DoneForShift = DoneForShift + {}, IsComplete = {}) WHERE Date = '{}' AND TaskName = '{}'"};
+    static constexpr auto* s_updateExistingValue {"UPDATE ShiftsInfo SET DoneForShift = DoneForShift + {}, IsComplete = {} WHERE Date = '{}' AND TaskName = '{}'"};
     SQLite::Database m_database;
 public:
     explicit ShiftsTable(const std::string& databaseName):m_database(databaseName, SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE)
@@ -82,6 +82,7 @@ public:
         }
         catch(std::exception& exc)
         {
+            result = false;
         }
         return result;
     }
