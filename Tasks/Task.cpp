@@ -3,33 +3,33 @@
 //TODO: создать глобально-уникальный id для каждой задачи
 namespace Tasks
 {
-Task::Task(const GUI& gui,
-           Name&& taskName,
-           Amount productAmount, 
-           Priority&& taskPriority, 
-           Product&& productToCreate,
-           Date::Date&& releaseDate ):m_gui(gui),
-                                      m_taskName(std::move(taskName)),
-                                      m_productAmount(productAmount),
-                                      m_taskPriority(std::move(taskPriority)),
-                                      m_productToCreate(std::move(productToCreate)),
-                                      m_releaseDate(std::move(releaseDate)),
-                                      m_taskProgress(Amount{0.0}, Amount{m_productAmount.value()})
+Task::Task(const TaskData& taskData, const Product& product): m_gui(taskData.getIdentifier()),
+                                                              m_productToCreate(product),
+                                                              m_releaseDate(std::string_view(taskData.releaseDate)),
+                                                              m_taskPriority(taskData.status, m_releaseDate)
 {
+    setName(taskData.taskName);
+    m_taskProgress = Progress{taskData.doneProduct, taskData.productToDoAmount, taskData.wastedRawMaterials};
+}
+
+void Task::setName(const Name& name)
+{
+    if (!name.empty())
+        m_taskName = name;
+    else
+        throw std::runtime_error("Имя задачи не может быть пустой строкой");
 }
 
 bool Task::isTaskDone() const
 {
-    return m_taskProgress.completed() >= 100.0;
+    return m_taskProgress.isCompleted();
 }
 
 void Task::addData(Amount doneProductAmount, Amount rawMaterials)
 {
     if (!isTaskDone())
     {
-        m_createdProduct = Amount{ m_createdProduct.value() + doneProductAmount.value() };
-        m_wastedRawMaterials = Amount {m_wastedRawMaterials.value() + rawMaterials.value()};
-        m_taskProgress.changeCurrentResult(m_createdProduct);
+        m_taskProgress.changeCurrentResult(doneProductAmount, rawMaterials);
     }
 }
 
@@ -39,9 +39,12 @@ void Task::changeTaskPriority(PriorityStatus newPriorityStatus)
         m_taskPriority = Priority{newPriorityStatus, m_releaseDate};
 }
 
-double Task::leftToDo() const
+Amount Task::leftToDo() const
 {
-    return m_productAmount.value() - m_createdProduct.value();
+    constexpr int doneProductIndex {0};
+    constexpr int productToDoAmountIndex {1};
+    auto amountData = m_taskProgress.getAmountData();
+    return std::get<productToDoAmountIndex>(amountData) - std::get<doneProductIndex>(amountData);
 }
 
 void Task::changeReleaseDate(const Date::Date& newReleaseDate, const Date::Date& currentDate)
@@ -59,8 +62,7 @@ void Task::changeProductToDoAmount(Amount newProductAmount)
 {
     if (!isTaskDone())
     {
-        m_productAmount = newProductAmount;
-        m_taskProgress.changeGoal(m_productAmount);
+        m_taskProgress.changeGoal(newProductAmount);
     }
 }
 
@@ -70,43 +72,21 @@ void Task::changeTaskName(const Name& newName)
         m_taskName = newName;
 }
 
-GUI Task::gui() const
+TaskData Task::getTaskData() const
+{
+    constexpr int doneProductIndex {0};
+    constexpr int productToDoAmountIndex {1};
+    constexpr int wastedRawMaterialsIndex {2};
+    std::string releaseDate = m_releaseDate.getDate();
+    auto amountData = m_taskProgress.getAmountData();
+    Amount doneProduct = std::get<doneProductIndex>(amountData);
+    Amount productToDoAmount = std::get<productToDoAmountIndex>(amountData);
+    Amount wastedRawMaterials = std::get<wastedRawMaterialsIndex>(amountData);
+    return TaskData{m_taskName, m_productToCreate.name(), releaseDate, m_taskPriority.status(), productToDoAmount, doneProduct, wastedRawMaterials, m_gui};
+}
+
+GUI Task::getTaskIdentifier() const
 {
     return m_gui;
-}
-
-std::string Task::taskName() const
-{
-    return m_taskName.name();
-}
-
-std::string Task::productName() const
-{
-    return m_productToCreate.name();
-}
-
-int Task::taskPriority() const
-{
-    return static_cast<int>(m_taskPriority.status());
-}
-
-std::string Task::releaseDate() const
-{
-    return m_releaseDate.getDate();
-}
-
-double Task::createdProduct() const
-{
-    return m_createdProduct.value();
-}
-
-double Task::productAmount() const
-{
-    return m_productAmount.value();
-}
-
-double Task::wastedRawMaterials() const
-{
-    return m_wastedRawMaterials.value();
 }
 }
