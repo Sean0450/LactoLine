@@ -19,9 +19,7 @@ SOURCES += \
     Dialogs/DataCreationDialog.cpp \
     Dialogs/TaskDataDialog.cpp \
     Footer.cpp \
-    GeneralValues/Amount.cpp \
     GeneralValues/Gui.cpp \
-    GeneralValues/Name.cpp \
     GeneralValues/Priority.cpp \
     GeneralValues/Progress.cpp \
     LedIndicator.cpp \
@@ -64,9 +62,8 @@ HEADERS += \
     Dialogs/DataCreationDialog.hpp \
     Dialogs/TaskDataDialog.hpp \
     Footer.hpp \
-    GeneralValues/Amount.hpp \
+    GeneralValues/FundamentalTypes.hpp \
     GeneralValues/Gui.hpp \
-    GeneralValues/Name.hpp \
     GeneralValues/Priority.hpp \
     GeneralValues/Progress.hpp \
     LedIndicator.hpp \
