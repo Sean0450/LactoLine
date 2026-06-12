@@ -12,7 +12,7 @@ class TaskDataDialog: public DataCreationDialog
     double m_wastedRawMaterials {0.0};
 
 public:
-    explicit TaskDataDialog(double createdProduct, QWidget* parent = nullptr);
+    explicit TaskDataDialog(QWidget* parent = nullptr);
     double getCreatedProduct() const;
     double getWastedRawMaterials() const;
 };

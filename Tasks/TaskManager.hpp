@@ -32,7 +32,6 @@ class TaskManager: public TaskChangedObserver,
     ShiftsTable m_shiftsTable;
 
     std::optional<Task> fromDataToTask(const TaskData& data);
-    TaskData fromTaskToData(const Task& task) const;
     std::optional<Product> fromDataToProduct(const ProductData& data);
     void readTasksFromTable();
     void readProductFromtable();

@@ -86,19 +86,19 @@ QString TaskWidget::constructCompleteString()
 
 void TaskWidget::onAddTaskDataClick()
 {
-    auto dialog = TaskDataDialog(m_taskData.doneProduct, this);
+    auto dialog = TaskDataDialog(this);
     dialog.exec();
-    if (m_taskData.doneProduct < dialog.getCreatedProduct())
+    if (dialog.getCreatedProduct() > 0.0)
     {
-        m_taskData.doneProduct = dialog.getCreatedProduct();
-        if (m_taskChangedObserver)
-            m_taskChangedObserver->doneProductAmountChanged(m_taskData.getIdentifier(), dialog.getCreatedProduct(), dialog.getWastedRawMaterials());
+        m_taskData.doneProduct += dialog.getCreatedProduct();
         if (m_taskData.doneProduct > m_taskData.productToDoAmount)
         {
             m_taskData.productToDoAmount = m_taskData.doneProduct;
             if (m_taskChangedObserver)
                 m_taskChangedObserver->taskDataChanged(std::make_unique<ToDoProductChangedCommand>(m_taskData));
         }
+        if (m_taskChangedObserver)
+            m_taskChangedObserver->doneProductAmountChanged(m_taskData.getIdentifier(), dialog.getCreatedProduct(), dialog.getWastedRawMaterials());
         applyTaskData();
     }
 }
