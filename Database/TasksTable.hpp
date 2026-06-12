@@ -23,7 +23,7 @@ class TasksTable: public BaseTable<Tasks::TaskData, DataChangedCommand<Tasks::Ta
     static constexpr auto* s_insertTask{"INSERT INTO Tasks VALUES ('{}', '{}', {}, {}, '{}', '{}', {}, {})"};
     static constexpr auto* s_selectActiveTask {"SELECT * FROM Tasks WHERE CreatedProduct < ProductToDo"};
     static constexpr auto* s_updateTaskData {"UPDATE Tasks SET '{}' = {} WHERE GUI = '{}'"};
-    static constexpr auto* s_updateDoneProduct {"UPDATE Tasks SET WastedRawMaterials = {}, CreatedProduct = {} WHERE GUI = '{}'"};
+    static constexpr auto* s_updateDoneProduct {"UPDATE Tasks SET WastedRawMaterials = WastedRawMaterials + {}, CreatedProduct = CreatedProduct + {} WHERE GUI = '{}'"};
 public:
     explicit TasksTable(const std::string& databaseName): BaseTable(databaseName)
     {
@@ -80,8 +80,6 @@ public:
         {
             using namespace std::chrono;
             SQLite::Statement query(m_database, s_selectActiveTask);
-            auto now = std::chrono::system_clock::now();
-            year_month_day date{std::chrono::floor<days>(now)};
             Date::Date currentDate(DateTranslator::getModelCurrentDate());
             while (query.executeStep())
             {
