@@ -42,7 +42,7 @@ TaskWidget::TaskWidget(const Tasks::TaskData& taskData,
                                  "background-color: #05B8CC;"
                                  "width: 10px;"
                                  "}"));
-    m_progressBar->setToolTip(QLatin1String(s_progressToolTip));
+    m_progressBar->setToolTip(QString::fromUtf8(s_progressToolTip));
     leftLayout->addWidget(m_progressBar);
 
     m_addTaskData = new QPushButton(this);
