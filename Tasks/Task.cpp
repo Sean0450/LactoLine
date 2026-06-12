@@ -33,10 +33,10 @@ void Task::addData(Amount doneProductAmount, Amount rawMaterials)
     }
 }
 
-void Task::changeTaskPriority(PriorityStatus newPriorityStatus)
+void Task::changeTaskPriority(const Date::Date& currentDate)
 {
     if (!isTaskDone())
-        m_taskPriority = Priority{newPriorityStatus, m_releaseDate};
+        m_taskPriority = Priority{m_releaseDate, currentDate};
 }
 
 Amount Task::leftToDo() const

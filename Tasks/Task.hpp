@@ -23,7 +23,7 @@ public:
     Task(const TaskData& data, const Product& product);
     void addData(Amount doneProductAmount, Amount rawMaterials);
     bool isTaskDone() const;
-    void changeTaskPriority(PriorityStatus newPriorityStatus);
+    void changeTaskPriority(const Date::Date& currentDate);
     void changeReleaseDate(const Date::Date& newReleaseDate, const Date::Date& currentDate);
     void changeProductToDoAmount(Amount newProductAmount);
     void changeTaskName(const Name& newName);

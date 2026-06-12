@@ -17,6 +17,8 @@ std::optional<Task> TaskManager::fromDataToTask(const TaskData& data)
     {
         Product productToCreate = findProductByName(data.productName);
         Task task(data, productToCreate);
+        task.changeTaskPriority(Date::Date(DateTranslator::getModelCurrentDate()));
+        // Необходимо пересчитывать приоритет после считывания задачи из базы - даты сдвигаются. Возможно, стоит в принципе удалить поле "приоритет" из базы, если все равно нужен пересчёт
         outputTask = std::move(task);
     }
     catch(std::exception& exc)
