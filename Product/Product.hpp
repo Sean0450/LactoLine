@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#include "GeneralValues/Name.hpp"
-#include "GeneralValues/Amount.hpp"
+#include "GeneralValues/FundamentalTypes.hpp"
 
 using namespace GeneralValues;
 class Product

@@ -19,33 +19,33 @@ Product::Product(Name&& name,
 
  bool Product::compareOutput(Amount amount, Amount wastedRawMaterials) const
  {
-    if (m_unitRawMaterials.value() <= 0.0 || m_epsilon <= 0)
+    if (m_unitRawMaterials <= 0.0 || m_epsilon <= 0)
         throw std::runtime_error("Product object is not valid");
     bool result {true};
-    Amount totalWeight{amount.value() * m_unitRawMaterials.value()};
-    if (std::abs(totalWeight.value() - wastedRawMaterials.value()) > m_epsilon * wastedRawMaterials.value())
+    Amount totalWeight{amount * m_unitRawMaterials};
+    if (std::abs(totalWeight - wastedRawMaterials) > m_epsilon * wastedRawMaterials)
         result = false;
     return result;
  }
 
  double Product::calcPrimeCost(Amount amount) const
  {
-    return std::trunc(amount.value() * m_primeCost * 100) / 100.0;
+    return std::trunc(amount * m_primeCost * 100) / 100.0;
  }
 
  std::string Product::name() const
 {
-    return m_name.name();
+    return m_name;
 }
 
 std::string Product::category() const
 {
-    return m_category.name();
+    return m_category;
 }
 
 double Product::unitRowMaterials() const
 {
-    return m_unitRawMaterials.value();
+    return m_unitRawMaterials;
 }
 
 void Product::changeUnitRawMaterials(Amount newUnitMaterials)

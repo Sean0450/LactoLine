@@ -14,17 +14,17 @@ ShiftTaskInformation::ShiftTaskInformation(Date::Date&& shiftDate,
 
 std::string ShiftTaskInformation::productName() const
 {
-    return m_productName.name();
+    return m_productName;
 }
 
 double ShiftTaskInformation::doneForShift() const
 {
-    return m_doneForShift.value();
+    return m_doneForShift;
 }
 
 double ShiftTaskInformation::needToDo() const
 {
-    return m_needToDo.value();
+    return m_needToDo;
 }
 
 std::string ShiftTaskInformation::date() const
