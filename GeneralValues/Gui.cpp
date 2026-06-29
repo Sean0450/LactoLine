@@ -4,7 +4,7 @@
 
 namespace GeneralValues
 {
-std::string Gui::generateGui()
+GUI Gui::generateGui()
 {
     std::string gui;
     gui.reserve(s_guiSize);

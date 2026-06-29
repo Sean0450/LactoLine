@@ -11,6 +11,6 @@ class Gui
     static constexpr int s_sectionsCount {4};
 public:
     explicit Gui()=default;
-    static std::string generateGui();
+    static GUI generateGui();
 };
 }
