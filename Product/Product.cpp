@@ -3,24 +3,20 @@
 #include <stdexcept>
 #include <cmath>
 
-Product::Product(Name&& name,
-                 Name&& category, 
-                 Amount unitRawMaterials,
-                 double primeCost, 
-                 double epsilon): m_name(std::move(name)),
-                                  m_category(std::move(category)),
-                                  m_unitRawMaterials(unitRawMaterials)
+Product::Product(const ProductData& data):m_name(data.productName),
+                                          m_category(data.categoryName),
+                                          m_unitRawMaterials(data.unitRawMaterials)
 {
-    if (primeCost <= 0.0 || epsilon <= 0.0)
-        throw std::runtime_error("Incorrect measurements");
-    m_primeCost = primeCost;
-    m_epsilon = epsilon;
+    if (isZeroOrNegative(data.primeCost) || isZeroOrNegative(data.epsilon))
+        throw std::runtime_error("Некорректные значения");
+    m_primeCost = data.primeCost;
+    m_epsilon = data.epsilon;
 }
 
  bool Product::compareOutput(Amount amount, Amount wastedRawMaterials) const
  {
-    if (m_unitRawMaterials <= 0.0 || m_epsilon <= 0)
-        throw std::runtime_error("Product object is not valid");
+     if (isZeroOrNegative(m_unitRawMaterials))
+        throw std::runtime_error("Количество сырья на единицу продукции невалидно");
     bool result {true};
     Amount totalWeight{amount * m_unitRawMaterials};
     if (std::abs(totalWeight - wastedRawMaterials) > m_epsilon * wastedRawMaterials)
@@ -33,46 +29,38 @@ Product::Product(Name&& name,
     return std::trunc(amount * m_primeCost * 100) / 100.0;
  }
 
- std::string Product::name() const
+ProductData Product::getProductData() const
+{
+    return ProductData(m_name, m_category, m_unitRawMaterials, m_primeCost, m_epsilon);
+}
+
+Name Product::name() const
 {
     return m_name;
 }
 
-std::string Product::category() const
-{
-    return m_category;
-}
-
-double Product::unitRowMaterials() const
-{
-    return m_unitRawMaterials;
-}
-
 void Product::changeUnitRawMaterials(Amount newUnitMaterials)
 {
+    if (isZeroOrNegative(newUnitMaterials) <= 0.0)
+        throw std::runtime_error("Количество сырья на еденицу продукции не может быть меньше или равно нулю");
     m_unitRawMaterials = newUnitMaterials;
-}
-
-double Product::primeCost() const
-{
-    return m_primeCost;
 }
 
 void Product::changePrimeCost(double newPrimeCost)
 {
-    if (newPrimeCost <= 0.0)
-        throw std::runtime_error("Prime cost can't be zero or negative");
+    if (isZeroOrNegative(newPrimeCost) <= 0.0)
+        throw std::runtime_error("Себестоимость не может быть меньше равна нулю");
     m_primeCost = newPrimeCost;
-}
-
-double Product::epsilon() const
-{
-    return m_epsilon;
 }
 
 void Product::changeEpsilon(double newEpsiolon)
 {
-    if (newEpsiolon <= 0.0)
-        throw std::runtime_error("Epsilon can't be zero or negative");
+    if (isZeroOrNegative(newEpsiolon) <= 0.0)
+        throw std::runtime_error("Погрешность измерений не может быть меньше равна нулю");
     m_epsilon = newEpsiolon;
+}
+
+bool Product::isZeroOrNegative(double data) const
+{
+    return data <= 0.0;
 }

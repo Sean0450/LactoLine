@@ -94,7 +94,7 @@ std::vector<ProductData> TaskManager::getProductData()
     std::vector<ProductData> data;
     for (const auto& product: m_products)
     {
-        data.emplace_back(product.name(), product.category(), product.unitRowMaterials(), product.primeCost(), product.epsilon());
+        data.emplace_back(product.getProductData());
     }
     return data;
 }
@@ -104,10 +104,7 @@ std::optional<Product> TaskManager::fromDataToProduct(const ProductData& data)
     std::optional<Product> result;
     try
     {
-        Name productName(data.productName);
-        Name categoryName(data.categoryName);
-        Amount unitRawMaterials(data.unitRawMaterials);
-        result = Product(std::move(productName), std::move(categoryName), std::move(unitRawMaterials), data.primeCost, data.epsilon);
+        result = Product(data);
     }
     catch(std::exception& exc)
     {
