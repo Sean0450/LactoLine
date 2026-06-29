@@ -12,6 +12,7 @@ INCLUDEPATH += $$PWD/third_party/include
 INCLUDEPATH += $$PWD/third_party/sqlite3
 
 SOURCES += \
+    Database/TablesManager.cpp \
     Date/Date.cpp \
     Date/DateTranslator.cpp \
     Dialogs/CreateProductDialog.cpp \
@@ -54,6 +55,7 @@ HEADERS += \
     Database/BaseTable.hpp \
     Database/ProductTable.hpp \
     Database/ShiftsTable.hpp \
+    Database/TablesManager.hpp \
     Database/TasksTable.hpp \
     Date/Date.hpp \
     Date/DateTranslator.hpp \
