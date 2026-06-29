@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include <format>
-#include <chrono>
 
 #include "BaseTable.hpp"
 #include "Tasks/TaskData.hpp"
@@ -18,8 +17,8 @@ class TasksTable: public BaseTable<Tasks::TaskData, DataChangedCommand<Tasks::Ta
                                           "Priority INTEGER,"
                                           "Product TEXT,"
                                           "ReleaseDate TEXT,"
-                                          "WastedRawMaterials REAL,"
-                                          "CreatedProduct REAL)"};
+                                          "CreatedProduct REAL,"
+                                          "WastedRawMaterials REAL)"};
     static constexpr auto* s_insertTask{"INSERT INTO Tasks VALUES ('{}', '{}', {}, {}, '{}', '{}', {}, {})"};
     static constexpr auto* s_selectActiveTask {"SELECT * FROM Tasks WHERE CreatedProduct < ProductToDo"};
     static constexpr auto* s_updateTaskData {"UPDATE Tasks SET '{}' = {} WHERE GUI = '{}'"};
@@ -78,7 +77,6 @@ public:
         std::vector<Tasks::TaskData> result;
         try
         {
-            using namespace std::chrono;
             SQLite::Statement query(m_database, s_selectActiveTask);
             Date::Date currentDate(DateTranslator::getModelCurrentDate());
             while (query.executeStep())
@@ -91,8 +89,8 @@ public:
                     const double productToDo = query.getColumn(2);
                     const GeneralValues::PriorityStatus priority {static_cast<int>(query.getColumn(3))};
                     const std::string product = query.getColumn(4);
-                    const double wastedRawMaterials = query.getColumn(6);
-                    const double createdProduct = query.getColumn(7);
+                    const double createdProduct = query.getColumn(6);
+                    const double wastedRawMaterials = query.getColumn(7);
                     Tasks::TaskData taskData{taskName, product, releaseDate, priority, productToDo, createdProduct, wastedRawMaterials, gui};
                     result.emplace_back(std::move(taskData));
                 }
