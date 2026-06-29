@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <compare>
 
@@ -12,10 +12,10 @@ struct Color
     constexpr Color() = default;
     constexpr explicit Color(int nr, int ng, int nb, int nalpha)
     {
-        if (nr > 0 && nr <= 255) r = nr;
-        if (ng > 0 && ng <= 255) g = ng;
-        if (nb > 0 && nb <= 255) b = nb;
-        if (nalpha > 0 && nalpha <= 255) alpha = nalpha;
+        if (nr >= 0 && nr <= 255) r = nr;
+        if (ng >= 0 && ng <= 255) g = ng;
+        if (nb >= 0 && nb <= 255) b = nb;
+        if (nalpha >= 0 && nalpha <= 255) alpha = nalpha;
     }
 
     auto operator<=>(const Color& color) const = default;
