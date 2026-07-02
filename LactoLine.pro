@@ -24,7 +24,7 @@ SOURCES += \
     GeneralValues/Priority.cpp \
     GeneralValues/Progress.cpp \
     LedIndicator.cpp \
-    MainMeny.cpp \
+    MainMenu.cpp \
     PackingList/GoodWidget..cpp \
     PackingList/PackingListWidget.cpp \
     Product/Product.cpp \
@@ -68,7 +68,7 @@ HEADERS += \
     GeneralValues/Priority.hpp \
     GeneralValues/Progress.hpp \
     LedIndicator.hpp \
-    MainMeny.hpp \
+    MainMenu.hpp \
     PackingList/GoodWidget.hpp \
     PackingList/PackingListObserver.hpp \
     PackingList/PackingListWidget.hpp \

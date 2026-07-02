@@ -5,7 +5,7 @@
 
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
-#include "MainMeny.hpp"
+#include "MainMenu.hpp"
 #include "Footer.hpp"
 #include "Tasks/TaskListWidget.hpp"
 #include "Product/ProductTableWidget.hpp"
