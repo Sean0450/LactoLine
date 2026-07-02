@@ -30,7 +30,6 @@ SOURCES += \
     Product/Product.cpp \
     Product/ProductTableWidget.cpp \
     Shifts/ShiftTableView.cpp \
-    Shifts/ShiftTaskInformation.cpp \
     Tasks/CurrentShiftTaskGroup.cpp \
     Tasks/Task.cpp \
     Tasks/TaskGroup.cpp \
@@ -80,7 +79,6 @@ HEADERS += \
     Resources.hpp \
     Shifts/ShiftData.hpp \
     Shifts/ShiftTableView.hpp \
-    Shifts/ShiftTaskInformation.hpp \
     Shifts/ShiftTaskInformationObserver.hpp \
     Tasks/CurrentShiftTaskGroup.hpp \
     Tasks/Task.hpp \

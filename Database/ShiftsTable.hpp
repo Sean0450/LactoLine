@@ -15,7 +15,7 @@ class ShiftsTable
                                           "TaskName TEXT, "
                                           "DoneForShift REAL, "
                                           "NeedToDo REAL,"
-                                          "IsComplete INTEGER)"};
+                                          "IsComplete INTEGER)"}; // Удалить не нужное поле из БД
     static constexpr auto* s_addTaskInfo {"INSERT INTO ShiftsInfo VALUES ('{}', '{}', '{}', {}, {}, {})"};
     static constexpr auto* s_selectShifData {"SELECT * FROM ShiftsInfo WHERE Date = '{}'"};
     static constexpr auto* s_selectConcreteTaskData {"SELECT * FROM ShiftsInfo WHERE Date = '{}' AND TaskName = '{}'"};
@@ -34,7 +34,7 @@ public:
     }
     std::vector<ShiftData> getData(const Date::Date& date)
     {
-        std::vector<ShiftData> shiftData;
+        std::vector<ShiftData> shiftsData;
         try
         {
             SQLite::Statement query(m_database, std::format(s_selectShifData, date.getDate()));
@@ -42,17 +42,16 @@ public:
             {
                 const GeneralValues::GUI gui = query.getColumn(0);
                 const std::string shiftDate = query.getColumn(1);
-                const std::string productName = query.getColumn(2);
+                const std::string taskName = query.getColumn(2);
                 const double doneForShift = query.getColumn(3);
                 const double needToDo = query.getColumn(4);
-                int isComplete = query.getColumn(5);
-                shiftData.emplace_back(shiftDate, productName, doneForShift, needToDo, static_cast<bool>(isComplete), gui);
+                shiftsData.emplace_back(ShiftData{shiftDate, taskName, doneForShift, needToDo, gui});
             }
         }
         catch(std::exception& excpt)
         {
         }
-        return shiftData;
+        return shiftsData;
     };
 
     bool addTaskInfo(const ShiftData& data)

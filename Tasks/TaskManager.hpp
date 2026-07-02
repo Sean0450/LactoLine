@@ -27,6 +27,11 @@ class TaskManager: public TaskChangedObserver,
     void readTasksFromTable();
     void readProductFromtable();
     Product findProductByName(const std::string& productName);
+    ShiftData createTaskChangeEntry(const GUI& gui,
+                                    const std::string& taskName,
+                                    const std::string& date,
+                                    double needToDo,
+                                    double done);
 public:
     explicit TaskManager();
     void addTask(const TaskData& taskData);
