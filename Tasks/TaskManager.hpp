@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include <vector>
-#include <optional>
 
 #include "Task.hpp"
 #include "Commands/DataChangedCommand.hpp"
@@ -22,8 +21,6 @@ class TaskManager: public TaskChangedObserver,
     std::vector<Task> m_tasks;
     std::vector<Product> m_products;
     TablesManager m_tablesManager;
-    std::optional<Task> fromDataToTask(const TaskData& data);
-    std::optional<Product> fromDataToProduct(const ProductData& data);
     void readTasksFromTable();
     void readProductFromtable();
     Product findProductByName(const std::string& productName);

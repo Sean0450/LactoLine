@@ -64,3 +64,17 @@ bool Product::isZeroOrNegative(double data) const
 {
     return data <= 0.0;
 }
+
+std::optional<Product> Product::fromDataToProduct(const ProductData& data)
+{
+    std::optional<Product> result;
+    try
+    {
+        result = Product(data);
+    }
+    catch(std::exception& exc)
+    {
+        result = std::nullopt;
+    }
+    return result;
+}

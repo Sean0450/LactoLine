@@ -10,23 +10,6 @@ TaskManager::TaskManager()
     readTasksFromTable();
 }
 
-std::optional<Task> TaskManager::fromDataToTask(const TaskData& data)
-{
-    std::optional<Task> outputTask = std::nullopt;
-    try
-    {
-        Product productToCreate = findProductByName(data.productName);
-        Task task(data, productToCreate);
-        task.changeTaskPriority(Date::Date(DateTranslator::getModelCurrentDate()));
-        // Необходимо пересчитывать приоритет после считывания задачи из базы - даты сдвигаются. Возможно, стоит в принципе удалить поле "приоритет" из базы, если все равно нужен пересчёт
-        outputTask = std::move(task);
-    }
-    catch(std::exception& exc)
-    {
-    }
-    return outputTask;
-}
-
 void TaskManager::readTasksFromTable()
 {
     std::vector<TaskData> tasksData = m_tablesManager.getTaskData();
@@ -34,13 +17,12 @@ void TaskManager::readTasksFromTable()
     {
         try
         {
-            std::optional<Task> taskCreationResult = fromDataToTask(task);
+            std::optional<Task> taskCreationResult = Task::fromDataToTask(task, findProductByName(task.productName));
             if (taskCreationResult)
                 m_tasks.emplace_back(std::move(taskCreationResult.value()));
         }
         catch(std::exception& exc)
         {
-            //Удаляем таску, если хотя бы одно поле модели инвалидировалось
         }
     }
 }
@@ -50,7 +32,7 @@ void TaskManager::readProductFromtable()
     auto data = m_tablesManager.getProductData();
     for (const auto& element: data)
     {
-        std::optional<Product> product = fromDataToProduct(element);
+        std::optional<Product> product = Product::fromDataToProduct(element);
         if (product)
         {
             m_products.emplace_back(std::move(product.value()));
@@ -71,7 +53,7 @@ Product TaskManager::findProductByName(const std::string& productName)
 
 void TaskManager::addTask(const TaskData& taskData)
 {
-    std::optional<Task> taskCreationResult = fromDataToTask(taskData);
+    std::optional<Task> taskCreationResult = Task::fromDataToTask(taskData, findProductByName(taskData.productName));
     if (taskCreationResult && m_tablesManager.addTask(taskData))
     {
         m_tasks.emplace_back(std::move(taskCreationResult.value()));
@@ -98,24 +80,10 @@ std::vector<ProductData> TaskManager::getProductData()
     return data;
 }
 
-std::optional<Product> TaskManager::fromDataToProduct(const ProductData& data)
-{
-    std::optional<Product> result;
-    try
-    {
-        result = Product(data);
-    }
-    catch(std::exception& exc)
-    {
-        result = std::nullopt;
-    }
-    return result;
-}
-
 void TaskManager::createProduct(const ProductData& data)
 {
     bool isNameCorrect = std::ranges::none_of(m_products, [&](const auto& product){return product.name() == data.productName;});
-    std::optional<Product> product = fromDataToProduct(data);
+    std::optional<Product> product = Product::fromDataToProduct(data);
     if (isNameCorrect && product && m_tablesManager.addProductData(data))
         m_products.emplace_back(std::move(product.value()));
 }

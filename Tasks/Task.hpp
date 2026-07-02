@@ -21,6 +21,7 @@ class Task
 public:
     Task()=default;
     Task(const TaskData& data, const Product& product);
+    static std::optional<Task> fromDataToTask(const TaskData& data, const Product& product);
     void addData(Amount doneProductAmount, Amount rawMaterials);
     bool isTaskDone() const;
     void changeTaskPriority(const Date::Date& currentDate);

@@ -1,6 +1,8 @@
 ﻿#include "Task.hpp"
+#include "Date/DateTranslator.hpp"
+
 #include <stdexcept>
-//TODO: создать глобально-уникальный id для каждой задачи
+
 namespace Tasks
 {
 Task::Task(const TaskData& taskData, const Product& product): m_gui(taskData.getIdentifier()),
@@ -88,5 +90,21 @@ TaskData Task::getTaskData() const
 GUI Task::getTaskIdentifier() const
 {
     return m_gui;
+}
+
+std::optional<Task> Task::fromDataToTask(const TaskData& data, const Product& product)
+{
+    std::optional<Task> outputTask;
+    try
+    {
+        Task task(data, product);
+        task.changeTaskPriority(Date::Date(DateTranslator::getModelCurrentDate()));
+        outputTask = std::move(task);
+    }
+    catch(std::exception& exc)
+    {
+        outputTask = std::nullopt;
+    }
+    return outputTask;
 }
 }

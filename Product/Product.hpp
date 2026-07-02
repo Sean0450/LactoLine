@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <optional>
+
 #include "GeneralValues/FundamentalTypes.hpp"
 #include "ProductData.hpp"
 
@@ -16,6 +18,7 @@ class Product
 public:
     Product() = default;
     explicit Product(const ProductData& productData);
+    static std::optional<Product> fromDataToProduct(const ProductData& data);
     bool compareOutput(Amount amount, Amount wastedRawMaterials) const;
     double calcPrimeCost(Amount amount) const;
     ProductData getProductData() const;
