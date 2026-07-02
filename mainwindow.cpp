@@ -4,7 +4,6 @@
 #include <QListWidget>
 
 #include "mainwindow.hpp"
-#include "ui_mainwindow.h"
 #include "MainMenu.hpp"
 #include "Footer.hpp"
 #include "Tasks/TaskListWidget.hpp"
@@ -14,7 +13,6 @@
 
 MainWindow::MainWindow(std::weak_ptr<Tasks::TaskManager> taskManager, QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
     , m_taskManager(std::move(taskManager))
 {
     auto* centralWidget = new QWidget(this);
@@ -32,22 +30,12 @@ MainWindow::MainWindow(std::weak_ptr<Tasks::TaskManager> taskManager, QWidget *p
     verticalLayout->addStretch(1);
     verticalLayout->addWidget(footer);
 
-    std::vector<Tasks::TaskData> data;
-    if (auto manager = m_taskManager.lock())
-    {
-        data = manager->getCurrentShiftTaskData();
-        auto* lst = new TaskListWidget(data, manager.get(), this);
-        connect(lst, &TaskListWidget::taskAdded, this, [&](const auto& taskData){newTaskCreated(taskData);});
-        m_stack->addWidget(lst);
-        m_stack->addWidget(new ProductTableWidget(manager.get(), this));
-        m_stack->addWidget(new ShiftTableView(manager.get(), this));
-        m_stack->addWidget(new PackingList(manager.get(), this));
-    }
     mainLayout->addWidget(m_pagesList->getListObject());
     mainLayout->setStretchFactor(m_pagesList->getListObject(), 2);
     mainLayout->addLayout(verticalLayout);
     mainLayout->setStretchFactor(verticalLayout, 4);
     setCentralWidget(centralWidget);
+    registerMainWidgets();
 }
 
 void MainWindow::newTaskCreated(const Tasks::TaskData& data)
@@ -58,7 +46,15 @@ void MainWindow::newTaskCreated(const Tasks::TaskData& data)
     }
 }
 
-MainWindow::~MainWindow()
+void MainWindow::registerMainWidgets()
 {
-    delete ui;
+    if (auto manager = m_taskManager.lock())
+    {
+        auto* lst = new TaskListWidget(manager->getCurrentShiftTaskData(), manager.get(), this);
+        connect(lst, &TaskListWidget::taskAdded, this, [&](const auto& taskData){newTaskCreated(taskData);});
+        m_stack->addWidget(lst);
+        m_stack->addWidget(new ProductTableWidget(manager.get(), this));
+        m_stack->addWidget(new ShiftTableView(manager.get(), this));
+        m_stack->addWidget(new PackingList(manager.get(), this));
+    }
 }
