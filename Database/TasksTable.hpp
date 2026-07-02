@@ -14,15 +14,15 @@ class TasksTable: public BaseTable<Tasks::TaskData, DataChangedCommand<Tasks::Ta
                                           "GUI TEXT PRIMARY KEY, "
                                           "Name TEXT, "
                                           "ProductToDo REAL,"
-                                          "Priority INTEGER,"
                                           "Product TEXT,"
                                           "ReleaseDate TEXT,"
                                           "CreatedProduct REAL,"
                                           "WastedRawMaterials REAL)"};
-    static constexpr auto* s_insertTask{"INSERT INTO Tasks VALUES ('{}', '{}', {}, {}, '{}', '{}', {}, {})"};
+    static constexpr auto* s_insertTask{"INSERT INTO Tasks VALUES ('{}', '{}', {}, '{}', '{}', {}, {})"};
     static constexpr auto* s_selectActiveTask {"SELECT * FROM Tasks WHERE CreatedProduct < ProductToDo"};
     static constexpr auto* s_updateTaskData {"UPDATE Tasks SET '{}' = {} WHERE GUI = '{}'"};
     static constexpr auto* s_updateDoneProduct {"UPDATE Tasks SET CreatedProduct = CreatedProduct + {}, WastedRawMaterials = WastedRawMaterials + {} WHERE GUI = '{}'"};
+    static constexpr auto* s_deleteDoneTask {"DELETE FROM Tasks WHERE GUI = '{}'"};
 public:
     explicit TasksTable(const std::string& databaseName): BaseTable(databaseName)
     {
@@ -43,7 +43,6 @@ public:
                                           taskData.getIdentifier(),
                                           taskData.taskName,
                                           taskData.productToDoAmount,
-                                          static_cast<int>(taskData.status),
                                           taskData.productName,
                                           taskData.releaseDate,
                                           taskData.doneProduct,
@@ -81,18 +80,22 @@ public:
             Date::Date currentDate(DateTranslator::getModelCurrentDate());
             while (query.executeStep())
             {
-                const std::string releaseDate = query.getColumn(5);
+                const std::string gui = query.getColumn(0);
+                const std::string releaseDate = query.getColumn(4);
                 if (!currentDate.isDateMore(Date::Date(releaseDate)))
                 {
-                    const std::string gui = query.getColumn(0);
                     const std::string taskName = query.getColumn(1);
                     const double productToDo = query.getColumn(2);
-                    const GeneralValues::PriorityStatus priority {static_cast<int>(query.getColumn(3))};
-                    const std::string product = query.getColumn(4);
-                    const double createdProduct = query.getColumn(6);
-                    const double wastedRawMaterials = query.getColumn(7);
-                    Tasks::TaskData taskData{taskName, product, releaseDate, priority, productToDo, createdProduct, wastedRawMaterials, gui};
+                    const std::string product = query.getColumn(3);
+                    const double createdProduct = query.getColumn(5);
+                    const double wastedRawMaterials = query.getColumn(6);
+                    Tasks::TaskData taskData{taskName, product, releaseDate, GeneralValues::PriorityStatus::Low, productToDo, createdProduct, wastedRawMaterials, gui};
+                    // На приоритет выставляется заглушка, он все равно пересчитывается позднее
                     result.emplace_back(std::move(taskData));
+                }
+                else
+                {
+                    m_database.exec(std::format(s_deleteDoneTask, gui));
                 }
             }
         }
