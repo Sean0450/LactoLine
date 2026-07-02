@@ -10,6 +10,8 @@ Progress::Progress(Amount currentResult, Amount goal, Amount wastedRawMaterials)
     checkAmount(currentResult);
     m_currentResult = currentResult;
     checkGoal(goal);
+    if (goal < m_currentResult)
+        throw std::runtime_error("Задача уже выполнена");
     m_goal = goal;
     checkAmount(wastedRawMaterials);
     m_wastedRawMaterials = wastedRawMaterials;
